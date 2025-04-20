@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import React from 'react';
 import Head from 'next/head';
 import Layout from '../components/layout/Layout';
 import axios from 'axios';
