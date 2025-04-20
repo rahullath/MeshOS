@@ -1,0 +1,59 @@
+pasting holdings manually - "Trust Wallet
+
+Total Balance: $130.72
+Crypto Holdings:
+
+1. USDC (Base)
+Price: $0.99 | Change: -0.0%
+Quantity: 62.192612 | Value: $62.18
+
+
+2. TRX (Tron)
+Price: $0.24 | Change: +1.47%
+Quantity: 117.897828 | Value: $28.75
+
+
+3. SOL (Polygon)
+Price: $140.26 | Change: +4.82%
+Quantity: 0.100972 | Value: $14.16
+
+
+4. ETH (Base)
+Price: $1612.83 | Change: +1.66%
+Quantity: 0.003516 | Value: $5.67
+
+
+5. WBTC (Arbitrum)
+Price: $85,151.20 | Change: +0.92%
+Quantity: 0.000056 | Value: $4.84
+
+
+6. WBTC (Polygon)
+Price: $85,151.20 | Change: +0.92%
+Quantity: 0.000051 | Value: $4.39
+
+
+7. OM (Polygon)
+Price: $0.60 | Change: -5.1%
+Quantity: 6.558798 | Value: $3.96
+
+
+8. POL (Polygon)
+Price: $0.19 | Change: +0.35%
+Quantity: 17.032759 | Value: $3.25
+
+
+9. USDC (Polygon)
+Price: $0.99 | Change: -0.0%
+Quantity: 1.796504 | Value: $1.79
+
+
+
+10. AIDOGE (Arbitrum)
+Price: $0.00 | Change: +2.34%
+Quantity: 2,07,65,81,912.772156 | Value: $0.25
+
+
+11. ETH (Arbitrum)
+Price: $1,612.83 | Change: +1.66%
+Quantity: 0.000034 | Value: $0.05"

@@ -1,0 +1,42 @@
+Item,Category,University/Purpose,Offer Received,English Test,Scholarship?,£,Living,₹,Paid By,Paid?,Notes
+Passport Renewal,Documentation,Government Services,N/A,N/A,N/A,25,,2775,Rahul,TRUE,Required for visa application
+Bus Tickets,Travel,Travel to Home Town,N/A,N/A,N/A,25,,2775,Rahul,TRUE,For document collection
+Liverpool ,Application Fees,University of Liverpool,N/A,N/A,N/A,,,,,TRUE,Online application fee
+Edinburgh,Application Fees,University of Edinburgh,N/A,N/A,N/A,60,,6660,Rythem,TRUE,Online application fee
+Warwick,Application Fees,University of Warwick,N/A,N/A,N/A,80,,8880,Rahul,TRUE,Online application fee
+Glasgow,Application Fees,University of Glasgow,N/A,N/A,N/A,25,,2775,Rythem,TRUE,Online application fee
+Exeter,Application Fees,University of Exeter,N/A,N/A,N/A,,,,,TRUE,No application fee
+Greenwich,Application Fees,University of Greenwich,N/A,N/A,N/A,,,,,FALSE,Online application fee
+Birmingham,Application Fees,University of Birmingham,N/A,N/A,N/A,,,,,TRUE,Online application fee
+Bristol,Application Fees,University of Bristol,N/A,N/A,N/A,,,,,TRUE,Online application fee
+Strathclyde,Application Fees,University of Strathclyde,N/A,N/A,N/A,,,,,TRUE,No application fee
+Visa Fee,Visa,UK Immigration,N/A,N/A,N/A,,,,,FALSE,Student visa fee
+Education Loan,Living Expenses,Bank,N/A,N/A,N/A,,,,,FALSE,
+IELTS Exam Fee,Exams,British Council,N/A,N/A,N/A,,,,,FALSE,English proficiency test if required
+University of Edinburgh,Tuition Fees,University of Edinburgh,Not Yet,IELTS,5-10K GBP,41800,10664,5823504,,FALSE,Estimated tuition fee
+University of Warwick ,Tuition Fees,University of Warwick,N/A,N/A,N/A,42500,10664,5901204,,FALSE,rejected
+University of Glasgow ,Tuition Fees,University of Glasgow,Not Yet,IELTS,5-10K GBP,35640,10664,5139744,,FALSE,Estimated tuition fee
+University of Birmingham,Tuition Fees,University of Birmingham,Conditional Offer,IELTS,6000 GBP,26150,10664,4086354,,FALSE,Estimated tuition fee
+University of Bristol,Tuition Fees,University of Bristol,Not Yet,CBSE XII,2.5-5K GBP,35500,10664,5124204,,FALSE,Estimated tuition fee
+University of Liverpool ,Tuition Fees,University of Liverpool,Conditional Offer,CBSE XII,5000 GBP ,27500,10664,4236204,,FALSE,Estimated tuition fee
+University of Strathclyde ,Tuition Fees,University of Strathclyde,Conditional Offer,DUOLINGO,8000 GBP,24600,10664,3914304,,FALSE,Estimated tuition fee
+University of Exeter ,Tuition Fees,University of Exeter,Conditional Offer,CBSE XII,5000 GBP ,22700,10664,3703404,,FALSE,Estimated tuition fee
+University of Greenwich,Tuition Fees,University of Greenwich,Conditional Offer,CBSE XII,2.5-5K GBP,20550,10664,3464754,,FALSE,Estimated tuition fee
+Health Surcharge (IHS),Visa,UK Immigration,N/A,N/A,N/A,470,,52170,,FALSE,Immigration Health Surcharge
+Travel Insurance,Travel,Insurance Provider,N/A,N/A,N/A,500,,55500,,FALSE,Travel insurance for the duration of study
+Accommodation Deposit,Accommodation,Landlord/University Halls,N/A,N/A,N/A,1000,,111000,,FALSE,Deposit for accommodation
+Flight Tickets to UK,Travel,Airline,N/A,N/A,N/A,800,,88800,,FALSE,One-way flight ticket to UK
+Books and Study Materials,Study Materials,Various Vendors,N/A,N/A,N/A,200,,22200,,FALSE,Estimated cost for books and study materials
+Bank Transfer Fees,Banking,Bank,N/A,N/A,N/A,50,,5550,,FALSE,Fees for international money transfers
+Certification of Documents,Documentation,Notary/Government Office,N/A,N/A,N/A,30,,3330,,FALSE,Attestation of academic documents
+Courier Charges,Shipping,Courier Service,N/A,N/A,N/A,25,,2775,,FALSE,Sending documents to universities
+SIM Card for UK,Communication,Telecom Provider,N/A,N/A,N/A,20,,2220,,FALSE,UK SIM card upon arrival
+Groceries & Essentials,Living Expenses,Supermarket,N/A,N/A,N/A,150,,16650,,FALSE,For first few days in the UK
+Local Transportation (UK),Travel,Public Transport,N/A,N/A,N/A,100,,11100,,FALSE,For initial travel in the UK
+Transcripts (CBSE),Documentation,Government Services,N/A,N/A,N/A,14.41,,1599.51,Rythem,TRUE,CBSE Duplicate Academy Documents
+Transcripts (CHRIST),documentation,Application ,N/A,N/A,N/A,50,,5550,Rythem,TRUE,CHRIST University
+Letter of Recommendation ,documentation,Application ,N/A,N/A,N/A,,,,,FALSE,Cat UKVI requirements
+Marshall Health Certificate,Visa,Pet Cat,N/A,N/A,N/A,,,,,FALSE,Cat UKVI requirements
+Marshall Visa Process,Visa,Pet Cat,N/A,N/A,N/A,,,,,FALSE,Cat UKVI requirements
+Microchipping Cat,Visa,Pet Cat,N/A,N/A,N/A,14,,1554,Rahul,TRUE,Cat UKVI requirements
+Rabies Injection+Certificate,Visa,Pet Cat,N/A,N/A,N/A,,,,,FALSE,Cat UKVI requirements
