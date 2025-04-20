@@ -1,8 +1,7 @@
 import dbConnect from '../../../lib/mongodb';
 import FinanceTransaction from '../../../models/FinanceTransaction';
 import CryptoHolding from '../../../models/CryptoHolding';
-import Papa from 'papaparse';
-import fs from 'fs';
+//import Papa from 'papaparse';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
@@ -16,7 +15,7 @@ export default async function handler(req, res) {
 
       if (parsedBankStatement.errors.length > 0) {
         console.error('Bank statement CSV parsing errors:', parsedBankStatement.errors);
-        return res.status(400).json({ message: 'Error parsing bank statement CSV' });
+        return res.status(400).json({ message: 'Error parsing bankStatementCsv' });
       }
 
       const transactions = parsedBankStatement.data.map(row => ({
@@ -32,12 +31,9 @@ export default async function handler(req, res) {
       // Process crypto holdings text
       const cryptoHoldingsLines = cryptoHoldingsTxt.split('\\n');
       const holdings = [];
-      let totalBalance = 0;
 
       for (const line of cryptoHoldingsLines) {
-        if (line.includes('Total Balance:')) {
-          totalBalance = parseFloat(line.split(': $')[1]);
-        } else if (line.includes('USDC (Base)')) {
+         if (line.includes('USDC (Base)')) {
           let quantity = parseFloat(line.match(/Quantity: ([\d\.]+)/)[1]);
           let value = parseFloat(line.match(/Value: \$([\d\.]+)/)[1]);
           holdings.push({

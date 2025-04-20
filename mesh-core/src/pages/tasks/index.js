@@ -11,11 +11,7 @@ export default function TasksPage() {
   const [error, setError] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [filter, setFilter] = useState({ status: '', category: '', due: '' });
-  
-  useEffect(() => {
-    fetchTasks();
-  }, [filter]);
-  
+
   const fetchTasks = async () => {
     try {
       setLoading(true);

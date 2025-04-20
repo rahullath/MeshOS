@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Layout from '../components/layout/Layout';
-import axios from 'axios';
 import CsvImporter from '../components/import/CsvImporter';
 import HealthImporter from '../components/import/HealthImporter';
 import FinanceImporter from '../components/import/FinanceImporter';
