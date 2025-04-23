@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
       const habits = parsedHabits.data.map(row => ({
         name: row.Name,
-        category: row.Category,
+        category: 'other',
         type: row.Question ? 'positive' : 'negative', // Infer type based on question
         color: row.Color
       }));

@@ -20,10 +20,11 @@ export default async function handler(req, res) {
 
       const transactions = parsedBankStatement.data.map(row => ({
         date: new Date(row.Date),
-        description: row.Particulars,
+        description: row.Particulars || 'N/A',
         type: row.Withdrawals ? 'expense' : 'income',
-        amount: parseFloat(row.Withdrawals || row.Deposits),
-        currency: 'INR'
+        amount: parseFloat(row.Withdrawals || row.Deposits) || 0,
+        currency: 'INR',
+        userId: 'default' // Assuming a default user ID can be used
       }));
 
       await FinanceTransaction.insertMany(transactions);
