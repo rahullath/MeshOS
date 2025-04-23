@@ -1,7 +1,7 @@
 import dbConnect from '../../../lib/mongodb';
 import FinanceTransaction from '../../../models/FinanceTransaction';
 import CryptoHolding from '../../../models/CryptoHolding';
-//import Papa from 'papaparse';
+import Papa from 'papaparse';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
