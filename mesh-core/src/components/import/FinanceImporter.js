@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import Papa from 'papaparse';
 
 export default function FinanceImporter() {
   const [bankStatementFile, setBankStatementFile] = useState(null);
