@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Head from 'next/head';
 import axios from 'axios';
 import Layout from '../../components/layout/Layout';
@@ -11,26 +11,6 @@ export default function TasksPage() {
   const [error, setError] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [filter, setFilter] = useState({ status: '', category: '', due: '' });
-
-  const fetchTasks = async () => {
-    try {
-      setLoading(true);
-      
-      // Build query params from filter
-      const params = new URLSearchParams();
-      if (filter.status) params.append('status', filter.status);
-      if (filter.category) params.append('category', filter.category);
-      if (filter.due) params.append('due', filter.due);
-      
-      const response = await axios.get(`/api/tasks?${params.toString()}`);
-      setTasks(response.data);
-    } catch (err) {
-      console.error('Error fetching tasks:', err);
-      setError('Failed to load tasks. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
   
   const handleCreateTask = async (taskData) => {
     try {
