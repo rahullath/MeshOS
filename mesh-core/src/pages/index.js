@@ -13,7 +13,7 @@ export default function Dashboard() {
     tasksCompleted: 0,
     tasksRemaining: 0
   });
-  const [loading, setLoading] = useState(true);
+  const [loading] = useState(true);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -52,7 +52,7 @@ export default function Dashboard() {
 
       <div className="px-4 py-6">
         <h1 className="text-3xl font-bold text-gray-900">Your Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-500">Welcome back - here's what you need to know today</p>
+        <p className="mt-1 text-sm text-gray-500">Welcome back - here&#39;s what you need to know today</p>
       </div>
 
       {/* Dashboard Grid */}
@@ -88,7 +88,7 @@ export default function Dashboard() {
             <h3 className="text-lg leading-6 font-medium text-gray-900">Priority Tasks</h3>
           </div>
           <div className="px-4 py-3">
-            <p className="text-gray-500 text-sm">You'll add task components here...</p>
+            <p className="text-gray-500 text-sm">You&#39;ll add task components here...</p>
             {/* Task List Component will go here */}
           </div>
         </div>
