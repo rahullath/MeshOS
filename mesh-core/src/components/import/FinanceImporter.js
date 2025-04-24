@@ -45,12 +45,55 @@ export default function FinanceImporter() {
       const bankStatementCsvContent = await readTextFile(bankStatementFile);
       const cryptoHoldingsTxtContent = await readTextFile(cryptoHoldingsFile);
 
-      const userId = "6809d8c606c9ec803ca83ed3"; // Replace with actual userId
+      // Parse and pre-process the CSV to ensure valid dates
+      const parsedBankStatement = Papa.parse(bankStatementCsvContent, {
+        header: true,
+        skipEmptyLines: true,
+        transformHeader: header => header.trim()
+      });
+
+      // Check for parsing errors
+      if (parsedBankStatement.errors && parsedBankStatement.errors.length > 0) {
+        console.error("CSV parsing errors:", parsedBankStatement.errors);
+        setError('Error parsing the bank statement CSV. Please check the format.');
+        setIsLoading(false);
+        return;
+      }
+
+      // Process the data and confirm date format before sending
+      const processedData = parsedBankStatement.data.map(row => {
+        // Example of handling various date formats
+        let dateValue = null;
+        if (row.Date) {
+          // Try various date formats - DD-MM-YYYY, MM-DD-YYYY, YYYY-MM-DD
+          const dateParts = row.Date.split(/[-/]/);
+          if (dateParts.length === 3) {
+            // Assuming DD-MM-YYYY format
+            if (dateParts[0].length === 2 && dateParts[1].length === 2 && dateParts[2].length === 4) {
+              dateValue = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+            } else {
+              // Try to parse as is
+              dateValue = row.Date;
+            }
+          } else {
+            dateValue = row.Date;
+          }
+        }
+
+        return {
+          ...row,
+          _processedDate: dateValue
+        };
+      });
+
+      // Send the pre-processed data to the server
+      const userId = "6809d8c606c9ec803ca83ed3"; // Replace with actual userId or make dynamic
 
       const response = await axios.post('/api/import/finance', {
         bankStatementCsv: bankStatementCsvContent,
         cryptoHoldingsTxt: cryptoHoldingsTxtContent,
         userId: userId,
+        dateFormat: 'DD-MM-YYYY' // Explicitly telling the server what format to expect
       });
 
       setResults(response.data);
