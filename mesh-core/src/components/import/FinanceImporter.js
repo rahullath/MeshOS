@@ -45,9 +45,12 @@ export default function FinanceImporter() {
       const bankStatementCsvContent = await readTextFile(bankStatementFile);
       const cryptoHoldingsTxtContent = await readTextFile(cryptoHoldingsFile);
 
+      const userId = "6809d8c606c9ec803ca83ed3"; // Replace with actual userId
+
       const response = await axios.post('/api/import/finance', {
         bankStatementCsv: bankStatementCsvContent,
         cryptoHoldingsTxt: cryptoHoldingsTxtContent,
+        userId: userId,
       });
 
       setResults(response.data);
