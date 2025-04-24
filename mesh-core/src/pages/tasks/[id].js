@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import Layout from '../../../../components/layout/Layout';
+import Layout from '../../components/layout/Layout';
 import Head from 'next/head';
 
 export default function TaskDetailsPage() {
