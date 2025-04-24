@@ -2,7 +2,17 @@ import React from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 
-export default function TaskList({ tasks, onStatusChange, onDelete }) {
+export default function TaskList({ tasks, onStatusChange, onDelete, filter }) {
+  const filteredTasks = tasks.filter(task => {
+    if (filter.status && task.status !== filter.status) {
+      return false;
+    }
+    if (filter.category && task.category !== filter.category) {
+      return false;
+    }
+    return true;
+  });
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full divide-y divide-gray-200">

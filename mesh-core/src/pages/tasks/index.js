@@ -55,7 +55,7 @@ export default function TasksPage() {
   return (
     <Layout>
       <Head>
-        <title>Task Management | Life Dashboard</title>
+        <title>Task Management | Mesh OS</title>
       </Head>
       
       <div className="mb-6">
@@ -160,6 +160,7 @@ export default function TasksPage() {
             tasks={tasks}
             onStatusChange={handleStatusChange}
             onDelete={handleDeleteTask}
+            filter={filter}
           />
         )}
       </div>
