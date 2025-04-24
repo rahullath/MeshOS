@@ -19,14 +19,18 @@ export default async function handler(req, res) {
         return res.status(400).json({ message: 'Error parsing bankStatementCsv' });
       }
 
-      const transactions = parsedBankStatement.data.map(row => ({
-        date: moment(row.Date, 'DD-MM-YYYY').toDate(),
-        description: row.Particulars || 'N/A',
-        type: row.Withdrawals ? 'expense' : 'income',
-        amount: parseFloat(row.Withdrawals || row.Deposits) || 0,
-        currency: 'INR',
-        userId: userId
-      }));
+      const transactions = parsedBankStatement.data.map(row => {
+        console.log("Date string:", row.Date);
+        const date = moment(row.Date, 'DD-MM-YYYY').toDate();
+        return {
+          date: date,
+          description: row.Particulars || 'N/A',
+          type: row.Withdrawals ? 'expense' : 'income',
+          amount: parseFloat(row.Withdrawals || row.Deposits) || 0,
+          currency: 'INR',
+          userId: userId
+        };
+      });
 
       await FinanceTransaction.insertMany(transactions);
 
