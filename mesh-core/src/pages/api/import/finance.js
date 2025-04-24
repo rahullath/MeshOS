@@ -2,13 +2,14 @@ import dbConnect from '../../../lib/mongodb';
 import FinanceTransaction from '../../../models/FinanceTransaction';
 import CryptoHolding from '../../../models/CryptoHolding';
 import Papa from 'papaparse';
+import moment from 'moment';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
       await dbConnect();
 
-      const { bankStatementCsv, cryptoHoldingsTxt } = req.body;
+      const { bankStatementCsv, cryptoHoldingsTxt, userId } = req.body;
 
       // Process bank statement CSV
       const parsedBankStatement = Papa.parse(bankStatementCsv, { header: true, skipEmptyLines: true });
@@ -19,12 +20,12 @@ export default async function handler(req, res) {
       }
 
       const transactions = parsedBankStatement.data.map(row => ({
-        date: new Date(row.Date),
+        date: moment(row.Date, 'DD-MM-YYYY').toDate(),
         description: row.Particulars || 'N/A',
         type: row.Withdrawals ? 'expense' : 'income',
         amount: parseFloat(row.Withdrawals || row.Deposits) || 0,
         currency: 'INR',
-        userId: 'default' // Assuming a default user ID can be used
+        userId: userId
       }));
 
       await FinanceTransaction.insertMany(transactions);
