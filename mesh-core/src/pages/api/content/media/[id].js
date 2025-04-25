@@ -1,7 +1,7 @@
 // src/pages/api/content/media/[id].js - CRUD for a specific media entry
 import dbConnect from '../../../../lib/mongodb';
 import Media from '../../../../models/Media';
-import withAuth from '../../../middleware/withAuth';
+import withAuth from '../../../../../middleware/withAuth';
 
 async function handler(req, res) {
   const { id } = req.query;

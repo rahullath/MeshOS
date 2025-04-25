@@ -1,7 +1,7 @@
 // src/pages/api/content/media/index.js - CRUD for watched media
 import dbConnect from '../../../../lib/mongodb';
 import Media from '../../../../models/Media';
-import withAuth from '../../../middleware/withAuth';
+import withAuth from '../../../../../middleware/withAuth';
 
 async function handler(req, res) {
   await dbConnect();
