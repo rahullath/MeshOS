@@ -1,4 +1,4 @@
-import dbConnect from '../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../lib/mongodb';
 import Application from '../../../models/Application';
 
 export default async function handler(req, res) {
