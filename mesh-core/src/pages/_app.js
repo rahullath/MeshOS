@@ -1,6 +1,7 @@
 import '../styles/globals.css';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head'; // Add this import
 import { ThemeProvider } from 'next-themes';
 import DebugPanel from '../components/Debug';
 
@@ -8,6 +9,18 @@ function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showDebug, setShowDebug] = useState(false); // Add state for showDebug
+
+  // Toggle DebugPanel with Ctrl+Shift+D
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+        setShowDebug((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Simple auth check
   useEffect(() => {
@@ -18,7 +31,7 @@ function MyApp({ Component, pageProps }) {
           setLoading(false);
           return;
         }
-        
+
         // For debugging - just load the page without auth check
         setLoading(false);
       } catch (error) {
@@ -31,7 +44,7 @@ function MyApp({ Component, pageProps }) {
         setLoading(false);
       }
     };
-    
+
     checkAuth();
   }, [router.pathname]);
 
@@ -56,7 +69,7 @@ function MyApp({ Component, pageProps }) {
       </Head>
 
       <Component {...pageProps} key={router.pathname} />
-      
+
       {/* Debug panel (toggle with Ctrl+Shift+D) */}
       {showDebug && <DebugPanel />}
     </ThemeProvider>
