@@ -1,15 +1,22 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-replace-in-production';
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is not defined');
+}
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 export const generateToken = (userId) => {
   return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
 };
 
 export const verifyToken = (token) => {
+  console.log("Token to verify:", token);
+  console.log("JWT_SECRET:", JWT_SECRET);
   try {
     return jwt.verify(token, JWT_SECRET);
   } catch (error) {
+    console.error("JWT Verification Error:", error);
     return null;
   }
 };

@@ -18,6 +18,9 @@ export default function handler(req, res) {
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
+    
+    console.log("Token to set as cookie:", token);
+
 
     // Set HTTP-only cookie with the token
     res.setHeader(
