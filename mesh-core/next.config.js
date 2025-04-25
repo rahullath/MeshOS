@@ -4,6 +4,7 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
+  
   images: {
     remotePatterns: [
       {
@@ -13,6 +14,11 @@ const nextConfig = {
         pathname: '/**',
       },
     ],
+  },
+  css: {
+    loaderOptions: {
+      url: false,
+    },
   },
 };
 
