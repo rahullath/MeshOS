@@ -1,7 +1,9 @@
+// src/pages/api/tasks/index.js - Enhanced with better filtering and validation - implement it
 import dbConnect from '../../../lib/mongodb';
 import Task from '../../../models/Task';
+import withAuth from '../../../middleware/withAuth';
 
-export default async function handler(req, res) {
+async function handler(req, res) {
   await dbConnect();
   
   // GET - Fetch all tasks or with filters
@@ -9,10 +11,24 @@ export default async function handler(req, res) {
     try {
       let query = {};
       
-      // Handle query filters
+      // Basic query filters
       if (req.query.status) query.status = req.query.status;
       if (req.query.category) query.category = req.query.category;
       if (req.query.priority) query.priority = req.query.priority;
+      if (req.query.project) query.project = req.query.project;
+      
+      // Tag filtering
+      if (req.query.tag) {
+        query.tags = { $in: [req.query.tag] };
+      }
+      
+      // Search by title or description
+      if (req.query.search) {
+        query.$or = [
+          { title: { $regex: req.query.search, $options: 'i' } },
+          { description: { $regex: req.query.search, $options: 'i' } }
+        ];
+      }
       
       // Handle date filters
       if (req.query.due) {
@@ -30,22 +46,92 @@ export default async function handler(req, res) {
         } else if (req.query.due === 'overdue') {
           query.dueDate = { $lt: today };
           query.status = { $ne: 'done' };
+        } else if (req.query.due === 'future') {
+          query.dueDate = { $gt: today };
+        } else if (req.query.due === 'none') {
+          query.dueDate = { $exists: false };
         }
       }
       
-      const tasks = await Task.find(query).sort({ dueDate: 1, priority: -1 });
-      res.status(200).json(tasks);
+      // Parse sorting options
+      const sortOptions = {};
+      if (req.query.sort) {
+        const [field, order] = req.query.sort.split(':');
+        sortOptions[field] = order === 'desc' ? -1 : 1;
+      } else {
+        // Default sorting
+        sortOptions.priority = -1; // High priority first
+        sortOptions.dueDate = 1;   // Earlier due dates first
+        sortOptions.createdAt = -1; // Newest first
+      }
+      
+      // Pagination
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 50;
+      const skip = (page - 1) * limit;
+      
+      // Execute query with pagination
+      const tasks = await Task.find(query)
+        .sort(sortOptions)
+        .skip(skip)
+        .limit(limit);
+      
+      // Get total count for pagination
+      const total = await Task.countDocuments(query);
+      
+      res.status(200).json({
+        tasks,
+        pagination: {
+          total,
+          page,
+          limit,
+          pages: Math.ceil(total / limit)
+        }
+      });
     } catch (error) {
+      console.error('Error fetching tasks:', error);
       res.status(500).json({ message: error.message });
     }
   } 
   // POST - Create a new task
   else if (req.method === 'POST') {
     try {
+      // Validate required fields
+      const { title, category } = req.body;
+      
+      if (!title || !category) {
+        return res.status(400).json({ 
+          message: 'Missing required fields', 
+          required: ['title', 'category'] 
+        });
+      }
+      
+      // Validate category enum
+      const validCategories = ['work', 'job_application', 'university', 'project', 'personal', 'cat', 'other'];
+      if (!validCategories.includes(category)) {
+        return res.status(400).json({ 
+          message: 'Invalid category', 
+          allowed: validCategories
+        });
+      }
+      
+      // Handle due date conversion
+      if (req.body.dueDate) {
+        try {
+          req.body.dueDate = new Date(req.body.dueDate);
+          if (isNaN(req.body.dueDate.getTime())) {
+            return res.status(400).json({ message: 'Invalid dueDate format' });
+          }
+        } catch (err) {
+          return res.status(400).json({ message: 'Invalid dueDate format' });
+        }
+      }
+      
       const task = new Task(req.body);
       const newTask = await task.save();
       res.status(201).json(newTask);
     } catch (error) {
+      console.error('Error creating task:', error);
       res.status(400).json({ message: error.message });
     }
   } 
@@ -55,3 +141,5 @@ export default async function handler(req, res) {
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
+
+export default withAuth(handler);

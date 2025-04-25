@@ -17,13 +17,13 @@ export default function Layout({ children }) {
   ];
   
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-100">
+    <div className="flex h-screen overflow-hidden bg-deep-space-black">
       {/* Sidebar for larger screens */}
       <div className="hidden md:flex md:flex-shrink-0">
         <div className="flex flex-col w-64">
-          <div className="flex flex-col flex-grow pt-5 overflow-y-auto bg-blue-700 border-r">
+          <div className="flex flex-col flex-grow pt-5 overflow-y-auto bg-rich-navy border-r border-electric-blue">
             <div className="flex items-center flex-shrink-0 px-4">
-              <h1 className="text-xl font-bold text-white">Mesh OS</h1>
+              <h1 className="text-xl font-bold text-ice-white">Mesh OS</h1>
             </div>
             <div className="flex flex-col flex-grow mt-5">
               <nav className="flex-1 px-2 space-y-1">
@@ -33,8 +33,8 @@ export default function Layout({ children }) {
                     href={item.href}
                     className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
                       router.pathname === item.href
-                        ? 'bg-blue-800 text-white'
-                        : 'text-blue-100 hover:bg-blue-600'
+                        ? 'bg-cyber-purple text-ice-white'
+                        : 'text-silver hover:bg-electric-blue hover:text-deep-space-black'
                     }`}
                   >
                     <span className="mr-3">{item.icon}</span>
@@ -50,11 +50,11 @@ export default function Layout({ children }) {
       {/* Mobile sidebar */}
       <div className={`fixed inset-0 z-40 flex md:hidden ${sidebarOpen ? '' : 'hidden'}`}>
         <div
-          className="fixed inset-0 bg-gray-600 bg-opacity-75"
+          className="fixed inset-0 bg-deep-space-black bg-opacity-75"
           onClick={() => setSidebarOpen(false)}
         ></div>
         
-        <div className="relative flex-1 flex flex-col max-w-xs w-full bg-blue-700">
+        <div className="relative flex-1 flex flex-col max-w-xs w-full bg-rich-navy">
           <div className="absolute top-0 right-0 -mr-12 pt-2">
             <button
               type="button"
@@ -62,13 +62,13 @@ export default function Layout({ children }) {
               onClick={() => setSidebarOpen(false)}
             >
               <span className="sr-only">Close sidebar</span>
-              <span className="text-white text-2xl">&times;</span>
+              <span className="text-ice-white text-2xl">&times;</span>
             </button>
           </div>
           
           <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
             <div className="flex-shrink-0 flex items-center px-4">
-              <h1 className="text-xl font-bold text-white">Mesh OS</h1>
+              <h1 className="text-xl font-bold text-ice-white">Mesh OS</h1>
             </div>
             <nav className="mt-5 px-2 space-y-1">
               {navigation.map((item) => (
@@ -77,8 +77,8 @@ export default function Layout({ children }) {
                   href={item.href}
                   className={`group flex items-center px-2 py-2 text-base font-medium rounded-md ${
                     router.pathname === item.href
-                      ? 'bg-blue-800 text-white'
-                      : 'text-blue-100 hover:bg-blue-600'
+                      ? 'bg-cyber-purple text-ice-white'
+                      : 'text-silver hover:bg-electric-blue hover:text-deep-space-black'
                   }`}
                   onClick={() => setSidebarOpen(false)}
                 >
@@ -94,10 +94,10 @@ export default function Layout({ children }) {
       {/* Main content */}
       <div className="flex flex-col flex-1 overflow-hidden">
         {/* Top header */}
-        <div className="relative z-10 flex-shrink-0 flex h-16 bg-white shadow">
+        <div className="relative z-10 flex-shrink-0 flex h-16 bg-rich-navy shadow">
           <button
             type="button"
-            className="px-4 border-r border-gray-200 text-gray-500 md:hidden"
+            className="px-4 border-r border-electric-blue text-silver md:hidden"
             onClick={() => setSidebarOpen(true)}
           >
             <span className="sr-only">Open sidebar</span>

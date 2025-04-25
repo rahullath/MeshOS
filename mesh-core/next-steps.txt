@@ -1,0 +1,90 @@
+Mesh OS UI Brief
+Visual Identity
+Create a sleek, minimalist, and futuristic personal dashboard that feels both functional and visually striking.
+Color Palette
+
+Primary Background: Deep space black (#0A0E17)
+Secondary Background: Rich navy (#141E33)
+Accent Color: Electric blue (#00D8FF)
+Secondary Accent: Cyber purple (#6E56CF)
+Success: Mint green (#10B981)
+Warning: Amber (#F59E0B)
+Error: Coral red (#EF4444)
+Text Primary: Ice white (#F8FAFC)
+Text Secondary: Silver (#94A3B8)
+
+Typography
+
+Primary Font: Inter (clean, modern, highly readable)
+Heading Font: Space Grotesk (futuristic, geometric with personality)
+Code/Metric Font: JetBrains Mono (monospaced for data and numbers)
+Font Weights: Light for large displays, Regular for body text, Medium for emphasis, Bold for headings
+
+Design Elements
+
+Card Design: Subtle gradients with soft blur effects
+Borders: Thin (1px) glowing borders in accent colors
+Shadows: Soft, colored box shadows that add dimension without heaviness
+Icons: Simple, line-based icons with consistent stroke width
+Animations: Subtle micro-interactions (hover states, transitions between views)
+Spacing: Generous whitespace for readability and focus
+
+UI Components
+
+Dashboard Cards: Floating panels with subtle translucency
+Graphs/Charts: Minimalist design with thin lines and subtle gradients
+Navigation: Collapsible sidebar with icon-only option when collapsed
+Tables: Clean lines, alternating row backgrounds with subtle contrast
+Forms: Borderless inputs with underlines, focused states with accent glow
+Buttons: Pill-shaped with subtle hover animations
+
+Dashboard Organization
+
+Priority Focus: Key metrics and urgent items visible at the top
+Section Separation: Clear visual distinction between different life areas
+Data Visualization: Favor visual representations over raw numbers
+Customization: Allow repositioning of dashboard elements
+
+Inspiration Sources
+
+Web3 dashboards
+Spaceship control panels
+Cyberpunk interfaces
+Bloomberg terminals (for data density)
+Apple's Dark Mode design
+Vercel's dashboard
+
+Implementation Guidelines
+
+Implement using Tailwind CSS with custom theme configuration
+Use CSS variables for consistent theming
+Ensure mobile-responsive design with appropriate breakpoints
+Focus on performance by keeping animations lightweight
+Use semantic HTML for accessibility
+Ensure high contrast ratios for readability
+
+This personal dashboard should feel like a command center for your life - powerful, informative, and aesthetically pleasing without sacrificing functionality.
+
+
+
+----------------------------
+
+IMPORTANT PENDING TASKS - 
+Create a Login Page
+
+Add a simple login form to the frontend
+Implement authentication logic
+
+
+Integrate Frontend with API
+
+Connect your React components to the API endpoints
+Update your UI components to display data from the backend
+
+
+Data Import Functionality
+
+Finish implementing the data importers
+Add UI flows for importing CSV/TXT files
+
+Essentially make every feature we added so far functional 
