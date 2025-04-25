@@ -9,7 +9,7 @@ export default function handler(req, res) {
 
   // Simple authentication since this is a personal app
   if (
-    username === process.env.AUTH_USERNAME &&
+    username === process.env.AUTH_USER &&
     password === process.env.AUTH_PASSWORD
   ) {
     // Generate JWT token that expires in 7 days
