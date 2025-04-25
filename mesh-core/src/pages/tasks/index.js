@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import Layout from '../../components/Layout';
+import Layout from '../../components/layout/Layout'; // Fixed import path
 import TaskList from '../../components/tasks/TaskList';
 import TaskFilters from '../../components/tasks/TaskFilters';
-import { debugFetch } from '../../utils/apiDebug';
 
 export default function Tasks() {
   const [tasks, setTasks] = useState([]);
@@ -18,54 +17,59 @@ export default function Tasks() {
   
   const router = useRouter();
 
-  const fetchTasks = async () => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      // Build query string from filters
-      const queryParams = new URLSearchParams();
-      if (filters.status !== 'all') queryParams.append('status', filters.status);
-      if (filters.category !== 'all') queryParams.append('category', filters.category);
-      if (filters.dueDate !== 'all') queryParams.append('dueDate', filters.dueDate);
-      
-      const queryString = queryParams.toString();
-      const url = `/api/tasks${queryString ? `?${queryString}` : ''}`;
-      
-      // Use debug fetch to help troubleshoot
-      const response = await debugFetch(url);
-      
-      if (!response.ok) {
-        // Try to parse error message
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || `Failed to fetch tasks: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      console.log('Tasks data:', data);
-      
-      // Check if the data has the expected structure
-      if (Array.isArray(data)) {
-        setTasks(data);
-      } else if (Array.isArray(data.tasks)) {
-        setTasks(data.tasks);
-      } else {
-        console.warn('Unexpected task data format:', data);
-        setTasks([]);
-      }
-    } catch (err) {
-      console.error('Error fetching tasks:', err);
-      setError(err.message || 'Failed to load tasks');
-      // Set empty array to prevent endless loading state
-      setTasks([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // Fixed fetch function to prevent infinite loops
   useEffect(() => {
+    // Define fetchTasks inside useEffect to prevent recreating it on every render
+    const fetchTasks = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        // Build query string from filters
+        const queryParams = new URLSearchParams();
+        if (filters.status !== 'all') queryParams.append('status', filters.status);
+        if (filters.category !== 'all') queryParams.append('category', filters.category);
+        if (filters.dueDate !== 'all') queryParams.append('dueDate', filters.dueDate);
+        
+        const queryString = queryParams.toString();
+        const url = `/api/tasks${queryString ? `?${queryString}` : ''}`;
+        
+        console.log(`Fetching tasks from: ${url}`);
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          // Try to parse error message
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.message || `Failed to fetch tasks: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('Tasks data received:', data);
+        
+        // Check if the data has the expected structure
+        if (Array.isArray(data)) {
+          setTasks(data);
+        } else if (data.tasks && Array.isArray(data.tasks)) {
+          setTasks(data.tasks);
+        } else {
+          console.warn('Unexpected task data format:', data);
+          setTasks([]);
+        }
+      } catch (err) {
+        console.error('Error fetching tasks:', err);
+        setError(err.message || 'Failed to load tasks');
+        // Set empty array to prevent endless loading state
+        setTasks([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchTasks();
-  }, [filters]);
+    // Only re-fetch when filters change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters.status, filters.category, filters.dueDate]);
 
   const handleFilterChange = (newFilters) => {
     setFilters(prev => ({ ...prev, ...newFilters }));
@@ -76,7 +80,10 @@ export default function Tasks() {
   };
 
   const handleRefresh = () => {
-    fetchTasks();
+    // To force a refresh, toggle a filter and then back
+    const tempFilters = {...filters};
+    setFilters({...filters, status: filters.status === 'all' ? 'pending' : 'all'});
+    setTimeout(() => setFilters(tempFilters), 100);
   };
 
   return (
@@ -119,11 +126,11 @@ export default function Tasks() {
         
         {loading ? (
           <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <span className="ml-3 text-gray-700 dark:text-gray-300">Loading tasks...</span>
           </div>
         ) : (
-          <TaskList tasks={tasks} onRefresh={fetchTasks} />
+          <TaskList tasks={tasks} onRefresh={handleRefresh} />
         )}
       </div>
     </Layout>

@@ -1,55 +1,57 @@
 import '../styles/globals.css';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Head from 'next/head'; // Add this import
+import Head from 'next/head';
 import { ThemeProvider } from 'next-themes';
-import DebugPanel from '../components/Debug';
+import Layout from '../components/layout/Layout'; // Fixed import path
 
+// Simplified version without Debug component dependency
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [showDebug, setShowDebug] = useState(false); // Add state for showDebug
 
-  // Toggle DebugPanel with Ctrl+Shift+D
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.ctrlKey && e.shiftKey && e.key === 'D') {
-        setShowDebug((prev) => !prev);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []);
+  // Allow login routes without authentication
+  const publicRoutes = ['/login'];
+  const isPublicRoute = publicRoutes.includes(router.pathname);
 
-  // Simple auth check
+  // Simple auth check on initial load
   useEffect(() => {
+    // For public routes, don't check auth
+    if (isPublicRoute) {
+      setLoading(false);
+      return;
+    }
+
+    // Simple auth check for MVP version
+    // In the future, implement proper auth with API calls
+    // For now, assume authenticated for simplicity
+    setIsAuthenticated(true);
+    setLoading(false);
+
+    // For a full auth implementation, use:
+    /*
     const checkAuth = async () => {
       try {
-        // Skip auth check on login page
-        if (router.pathname === '/login') {
-          setLoading(false);
-          return;
-        }
-
-        // For debugging - just load the page without auth check
-        setLoading(false);
-      } catch (error) {
-        console.error('Auth check error:', error);
-        // If we can't check auth, assume not authenticated
-        if (router.pathname !== '/login') {
+        const response = await fetch('/api/auth/me');
+        if (response.ok) {
+          setIsAuthenticated(true);
+        } else {
           router.push('/login');
         }
+      } catch (err) {
+        console.error('Auth check error:', err);
+        router.push('/login');
       } finally {
         setLoading(false);
       }
     };
-
     checkAuth();
-  }, [router.pathname]);
+    */
+  }, [router.pathname, isPublicRoute]);
 
-  // Show loading screen while checking auth
-  if (loading && router.pathname !== '/login') {
+  // Show loading screen
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
         <div className="text-center">
@@ -61,17 +63,33 @@ function MyApp({ Component, pageProps }) {
   }
 
   return (
-    <ThemeProvider attribute="class">
+    <ThemeProvider attribute="class" defaultTheme="light">
       <Head>
         <title>MeshOS - Your Life Management System</title>
         <meta name="description" content="A comprehensive personal dashboard for organizing your life" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
+
+        {/* Critical CSS fixes for text visibility */}
+        <style jsx global>{`
+          h1, h2, h3, h4, h5, h6 {
+            color: var(--text-primary, #1E293B) !important;
+          }
+          .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+            color: #F8FAFC !important;
+          }
+          select, input, textarea {
+            color: #1E293B !important;
+            background-color: #FFFFFF !important;
+          }
+          .dark select, .dark input, .dark textarea {
+            color: #F8FAFC !important;
+            background-color: #1E293B !important;
+          }
+        `}</style>
       </Head>
 
-      <Component {...pageProps} key={router.pathname} />
-
-      {/* Debug panel (toggle with Ctrl+Shift+D) */}
-      {showDebug && <DebugPanel />}
+      <Component {...pageProps} />
     </ThemeProvider>
   );
 }
