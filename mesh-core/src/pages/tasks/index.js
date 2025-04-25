@@ -119,7 +119,7 @@ export default function Tasks() {
         
         {loading ? (
           <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
             <span className="ml-3 text-gray-700 dark:text-gray-300">Loading tasks...</span>
           </div>
         ) : (
