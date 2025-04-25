@@ -27,7 +27,11 @@ function MyApp({ Component, pageProps }) {
     
     const checkAuth = async () => {
       try {
-        const response = await fetch('/api/auth/me');
+        const response = await fetch('/api/auth/me',{
+          credentials: "omit",
+        });
+
+        
         if (response.ok) {
           setIsAuthenticated(true);
         } else {
