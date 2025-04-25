@@ -2,7 +2,10 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "middleware/*": ["src/middleware/*"],
+      "lib/*": ["src/lib/*"],
+      "models/*": ["src/models/*"]
     },
     "skipLibCheck": true
   }
