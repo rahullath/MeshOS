@@ -28,7 +28,7 @@ function MyApp({ Component, pageProps }) {
     const checkAuth = async () => {
       try {
         const response = await fetch('/api/auth/me',{
-          credentials: "omit",
+          credentials: "include",
         });
 
         
