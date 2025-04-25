@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-// import Head from 'next/head';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -33,12 +32,12 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-deep-space-black">
-      <div className="bg-rich-navy shadow-md rounded px-8 pt-6 pb-8 mb-4">
-        <h2 className="block text-ice-white text-sm font-bold mb-2">Login</h2>
-        {error && <p className="text-coral-red text-xs italic">{error}</p>}
+    <div className="flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-900">
+      <div className="bg-white dark:bg-gray-800 shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h2 className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Login</h2>
+        {error && <p className="text-red-500 text-xs italic">{error}</p>}
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+          <div className="mb-4 ">
             <label className="block text-silver text-sm font-bold mb-2" htmlFor="username">
               Username
             </label>
@@ -66,7 +65,7 @@ export default function Login() {
           </div>
           <div className="flex items-center justify-between">
             <button
-              className="bg-electric-blue hover:bg-cyber-purple text-deep-space-black font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
               Sign In
