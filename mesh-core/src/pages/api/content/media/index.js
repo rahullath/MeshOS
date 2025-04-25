@@ -1,5 +1,5 @@
 // src/pages/api/content/media/index.js - CRUD for watched media
-import dbConnect from '../../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../../lib/mongodb';
 import Media from '../../../../models/Media';
 import withAuth from '@/middleware/withAuth';
 

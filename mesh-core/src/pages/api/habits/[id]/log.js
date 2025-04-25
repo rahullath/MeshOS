@@ -1,5 +1,5 @@
 // src/pages/api/habits/[id]/log.js - Enhanced with better error handling
-import dbConnect from '../../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../../lib/mongodb';
 import HabitEntry from '../../../../models/HabitEntry';
 import Habit from '../../../../models/Habit';
 import withAuth from '../../../../middleware/withAuth';

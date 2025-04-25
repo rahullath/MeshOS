@@ -1,5 +1,5 @@
 // src/pages/api/finance/transactions/index.js - CRUD operations for financial transactions
-import dbConnect from '../../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../../lib/mongodb';
 import FinanceTransaction from '../../../../models/FinanceTransaction';
 import withAuth from '../../../../middleware/withAuth';
 

@@ -1,5 +1,5 @@
 // src/pages/api/tasks/index.js - Enhanced with better filtering and validation - implement it
-import dbConnect from '../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../lib/mongodb';
 import Task from '../../../models/Task';
 import withAuth from '../../../middleware/withAuth';
 

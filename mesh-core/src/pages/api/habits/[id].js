@@ -1,5 +1,5 @@
 // src/pages/api/habits/[id].js - CRUD operations for a specific habit
-import dbConnect from '../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../lib/mongodb';
 import Habit from '../../../models/Habit';
 import withAuth from '../../../middleware/withAuth';
 

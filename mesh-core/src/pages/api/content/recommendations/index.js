@@ -1,5 +1,5 @@
 // src/pages/api/content/recommendations/index.js - CRUD for content recommendations
-import dbConnect from '../../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../../lib/mongodb';
 import Recommendation from '../../../../models/Recommendation';
 import Media from '../../../../models/Media';
 import withAuth from '@/middleware/withAuth';

@@ -1,5 +1,5 @@
 // src/pages/api/finance/crypto/portfolio.js - Get crypto portfolio summary
-import dbConnect from '../../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../../lib/mongodb';
 import CryptoHolding from '../../../../models/CryptoHolding';
 import withAuth from '../../../../middleware/withAuth';
 import axios from 'axios';

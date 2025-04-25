@@ -45,3 +45,4 @@ export async function getCollection(collectionName) {
   const { db } = await connectToDatabase();
   return db.collection(collectionName);
 }
+

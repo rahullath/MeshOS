@@ -1,5 +1,5 @@
 // src/pages/api/health/medication/index.js - CRUD for medication tracking
-import dbConnect from '../../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../../lib/mongodb';
 import Medication from '../../../../models/Medication';
 import withAuth from '../../../../middleware/withAuth';
 

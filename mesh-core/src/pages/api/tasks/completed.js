@@ -1,5 +1,5 @@
 // src/pages/api/tasks/completed.js - Enhanced with date range filtering
-import dbConnect from '../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../lib/mongodb';
 import Task from '../../../models/Task';
 import withAuth from '../../../middleware/withAuth';
 

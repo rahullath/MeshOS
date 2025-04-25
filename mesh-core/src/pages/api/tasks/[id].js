@@ -1,5 +1,5 @@
 // src/pages/api/tasks/[id].js - CRUD operations for a specific task
-import dbConnect from '../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../lib/mongodb';
 import Task from '../../../models/Task';
 import withAuth from '../../../middleware/withAuth';
 

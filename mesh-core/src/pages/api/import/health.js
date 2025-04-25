@@ -1,4 +1,4 @@
-import dbConnect from '../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../lib/mongodb';
 import HeartRate from '../../../models/HeartRate';
 import Sleep from '../../../models/Sleep';
 

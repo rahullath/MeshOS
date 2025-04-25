@@ -1,4 +1,4 @@
-import dbConnect from '../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../lib/mongodb';
 import FinanceTransaction from '../../../models/FinanceTransaction';
 import CryptoHolding from '../../../models/CryptoHolding';
 import Papa from 'papaparse';

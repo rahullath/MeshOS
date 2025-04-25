@@ -1,4 +1,4 @@
-import dbConnect from '../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../lib/mongodb';
 import Application from '../../../models/Application';
 import Papa from 'papaparse';
 

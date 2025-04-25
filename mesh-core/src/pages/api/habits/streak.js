@@ -1,5 +1,5 @@
 // src/pages/api/habits/streak.js - Enhanced with more accurate streak calculation
-import dbConnect from '../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../lib/mongodb';
 import HabitEntry from '../../../models/HabitEntry';
 import Habit from '../../../models/Habit';
 import withAuth from '../../../middleware/withAuth';

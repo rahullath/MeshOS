@@ -1,5 +1,5 @@
 // src/pages/api/health/sleep/index.js - CRUD for sleep tracking
-import dbConnect from '../../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../../lib/mongodb';
 import Sleep from '../../../../models/Sleep';
 import withAuth from '../../../../middleware/withAuth';
 

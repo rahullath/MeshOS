@@ -1,5 +1,5 @@
 // src/pages/api/health/metrics/index.js - CRUD for health metrics
-import dbConnect from '../../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../../lib/mongodb';
 import HealthMetric from '../../../../models/HealthMetric';
 import withAuth from '../../../../middleware/withAuth';
 

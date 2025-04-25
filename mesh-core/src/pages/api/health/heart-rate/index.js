@@ -1,5 +1,5 @@
 // src/pages/api/health/heart-rate/index.js - CRUD for heart rate data
-import dbConnect from '../../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../../lib/mongodb';
 import HeartRate from '../../../../models/HeartRate';
 import withAuth from '../../../../middleware/withAuth';
 

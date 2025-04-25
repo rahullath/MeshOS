@@ -1,5 +1,5 @@
 // src/pages/api/habits/index.js - Enhanced with better validation and error handling
-import dbConnect from '../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../lib/mongodb';
 import Habit from '../../../models/Habit';
 import withAuth from '../../../middleware/withAuth';
 

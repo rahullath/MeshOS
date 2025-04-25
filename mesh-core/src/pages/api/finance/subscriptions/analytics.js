@@ -1,5 +1,5 @@
 // src/pages/api/finance/subscriptions/analytics.js - Subscription analytics
-import dbConnect from '../../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../../lib/mongodb';
 import Subscription from '../../../../models/Subscription';
 import withAuth from '../../../../middleware/withAuth';
 

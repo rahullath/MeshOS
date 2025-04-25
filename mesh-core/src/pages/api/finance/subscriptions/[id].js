@@ -1,5 +1,5 @@
 // src/pages/api/finance/subscriptions/[id].js - CRUD for a specific subscription
-import dbConnect from '../../../../lib/mongodb';
+import { connectToDatabase, getCollection } from '../../../../lib/mongodb';
 import Subscription from '../../../../models/Subscription';
 import withAuth from '../../../../middleware/withAuth';
 
