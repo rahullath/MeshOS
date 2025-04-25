@@ -2,12 +2,19 @@ import { verifyToken, getTokenFromHeader } from '../lib/auth';
 
 const withAuth = (handler) => async (req, res) => {
   try {
-    // For the personal app with only one user, you could simplify this
-    // Since you're the only user, you might want to use a simpler authentication method
-    // or even an API key approach instead of JWT
-    
+    // Get token from request
     const token = getTokenFromHeader(req);
     
+    // TEMPORARY DEV MODE: Allow requests even without authentication
+    // for development purposes (remove this in production)
+    const devMode = process.env.NODE_ENV !== 'production';
+    if (devMode) {
+      // Add a dummy user ID for development
+      req.userId = 'dev-user-id';
+      return handler(req, res);
+    }
+    
+    // Normal authentication flow
     if (!token) {
       return res.status(401).json({ success: false, message: 'Authentication required' });
     }
@@ -19,12 +26,19 @@ const withAuth = (handler) => async (req, res) => {
     }
     
     // Add user ID to the request object
-    req.userId = decoded.userId;
+    req.userId = decoded.userId || decoded.username;
     
     // Proceed to the actual handler
     return handler(req, res);
   } catch (error) {
     console.error('Auth middleware error:', error);
+    
+    // In development mode, continue anyway
+    if (process.env.NODE_ENV !== 'production') {
+      req.userId = 'dev-user-id';
+      return handler(req, res);
+    }
+    
     return res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };
