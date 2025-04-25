@@ -12,7 +12,7 @@ function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(true);
 
   // Allow login routes without authentication
-  const publicRoutes = ['/login'];
+  const publicRoutes = ['/login',"/"];
   const isPublicRoute = publicRoutes.includes(router.pathname);
 
   // Simple auth check on initial load
