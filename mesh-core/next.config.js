@@ -14,11 +14,6 @@ const nextConfig = {
       },
     ],
   },
-  css: {
-    loaderOptions: {
-      url: false,
-    },
-  },
 };
 
 module.exports = nextConfig;
