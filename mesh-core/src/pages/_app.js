@@ -21,34 +21,31 @@ function MyApp({ Component, pageProps }) {
     if (isPublicRoute) {
       setLoading(false);
       return;
-    }
-
-    // Simple auth check for MVP version
-    // In the future, implement proper auth with API calls
-    // For now, assume authenticated for simplicity
-    setIsAuthenticated(true);
-    setLoading(false);
-
-    // For a full auth implementation, use:
-    /*
+    };
+    console.log("Executing checkAuth")
+    
+    
     const checkAuth = async () => {
       try {
         const response = await fetch('/api/auth/me');
         if (response.ok) {
           setIsAuthenticated(true);
         } else {
+          setIsAuthenticated(false);
           router.push('/login');
         }
       } catch (err) {
         console.error('Auth check error:', err);
+        setIsAuthenticated(false);
         router.push('/login');
       } finally {
         setLoading(false);
       }
     };
     checkAuth();
-    */
-  }, [router.pathname, isPublicRoute]);
+    
+  }, [router.pathname]);
+
 
   // Show loading screen
   if (loading) {
@@ -60,6 +57,9 @@ function MyApp({ Component, pageProps }) {
         </div>
       </div>
     );
+  }
+  if(!loading && !isAuthenticated){
+    router.push("/login");
   }
 
   return (
