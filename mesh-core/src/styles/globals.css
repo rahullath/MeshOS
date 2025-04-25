@@ -1,4 +1,12 @@
-@import "tailwindcss";
+@layer base {
+  @tailwind base;
+}
+@layer components {
+  @tailwind components;
+}
+@layer utilities {
+  @tailwind utilities;
+}
 
 :root {
   --background: #ffffff;
