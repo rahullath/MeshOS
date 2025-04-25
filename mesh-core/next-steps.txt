@@ -1,90 +1,327 @@
-Mesh OS UI Brief
-Visual Identity
-Create a sleek, minimalist, and futuristic personal dashboard that feels both functional and visually striking.
-Color Palette
+Let's fix the import paths:
 
-Primary Background: Deep space black (#0A0E17)
-Secondary Background: Rich navy (#141E33)
-Accent Color: Electric blue (#00D8FF)
-Secondary Accent: Cyber purple (#6E56CF)
-Success: Mint green (#10B981)
-Warning: Amber (#F59E0B)
-Error: Coral red (#EF4444)
-Text Primary: Ice white (#F8FAFC)
-Text Secondary: Silver (#94A3B8)
+For withAuth.js:
 
-Typography
+It seems the auth library is missing or has an incorrect path. Let's create it if it doesn't exist.
 
-Primary Font: Inter (clean, modern, highly readable)
-Heading Font: Space Grotesk (futuristic, geometric with personality)
-Code/Metric Font: JetBrains Mono (monospaced for data and numbers)
-Font Weights: Light for large displays, Regular for body text, Medium for emphasis, Bold for headings
+What we need to create/fix:
+1. Create lib/auth.js
+2. Fix middleware/withAuth.js
+3. Create lib/mongodb.js
+4. Fix the API path for content analytics:
+5. Fix the API path for generate-recommendations:
+6. Fix the API path for finance analytics:
 
-Design Elements
+1.
+import jwt from 'jsonwebtoken';
 
-Card Design: Subtle gradients with soft blur effects
-Borders: Thin (1px) glowing borders in accent colors
-Shadows: Soft, colored box shadows that add dimension without heaviness
-Icons: Simple, line-based icons with consistent stroke width
-Animations: Subtle micro-interactions (hover states, transitions between views)
-Spacing: Generous whitespace for readability and focus
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-replace-in-production';
 
-UI Components
+export const generateToken = (userId) => {
+  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
+};
 
-Dashboard Cards: Floating panels with subtle translucency
-Graphs/Charts: Minimalist design with thin lines and subtle gradients
-Navigation: Collapsible sidebar with icon-only option when collapsed
-Tables: Clean lines, alternating row backgrounds with subtle contrast
-Forms: Borderless inputs with underlines, focused states with accent glow
-Buttons: Pill-shaped with subtle hover animations
+export const verifyToken = (token) => {
+  try {
+    return jwt.verify(token, JWT_SECRET);
+  } catch (error) {
+    return null;
+  }
+};
 
-Dashboard Organization
+export const getTokenFromHeader = (req) => {
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer ')
+  ) {
+    return req.headers.authorization.split(' ')[1];
+  }
+  return null;
+};
 
-Priority Focus: Key metrics and urgent items visible at the top
-Section Separation: Clear visual distinction between different life areas
-Data Visualization: Favor visual representations over raw numbers
-Customization: Allow repositioning of dashboard elements
+export const getUserFromToken = (req) => {
+  const token = getTokenFromHeader(req);
+  if (!token) return null;
+  
+  const decoded = verifyToken(token);
+  return decoded?.userId || null;
+};
 
-Inspiration Sources
+2.
+import { verifyToken, getTokenFromHeader } from '../lib/auth';
 
-Web3 dashboards
-Spaceship control panels
-Cyberpunk interfaces
-Bloomberg terminals (for data density)
-Apple's Dark Mode design
-Vercel's dashboard
+const withAuth = (handler) => async (req, res) => {
+  try {
+    // For the personal app with only one user, you could simplify this
+    // Since you're the only user, you might want to use a simpler authentication method
+    // or even an API key approach instead of JWT
+    
+    const token = getTokenFromHeader(req);
+    
+    if (!token) {
+      return res.status(401).json({ success: false, message: 'Authentication required' });
+    }
+    
+    const decoded = verifyToken(token);
+    
+    if (!decoded) {
+      return res.status(401).json({ success: false, message: 'Invalid authentication token' });
+    }
+    
+    // Add user ID to the request object
+    req.userId = decoded.userId;
+    
+    // Proceed to the actual handler
+    return handler(req, res);
+  } catch (error) {
+    console.error('Auth middleware error:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
 
-Implementation Guidelines
+export default withAuth;
 
-Implement using Tailwind CSS with custom theme configuration
-Use CSS variables for consistent theming
-Ensure mobile-responsive design with appropriate breakpoints
-Focus on performance by keeping animations lightweight
-Use semantic HTML for accessibility
-Ensure high contrast ratios for readability
+3. import { MongoClient } from 'mongodb';
 
-This personal dashboard should feel like a command center for your life - powerful, informative, and aesthetically pleasing without sacrificing functionality.
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/meshOS';
+const MONGODB_DB = process.env.MONGODB_DB || 'meshOS';
+
+// Check if we're in a production environment
+const isProd = process.env.NODE_ENV === 'production';
+
+let cachedClient = null;
+let cachedDb = null;
+
+export async function connectToDatabase() {
+  // If we have the cached connection, use that
+  if (cachedClient && cachedDb) {
+    return { client: cachedClient, db: cachedDb };
+  }
+
+  // Otherwise connect and cache the connection
+  if (!MONGODB_URI) {
+    throw new Error('Please define the MONGODB_URI environment variable');
+  }
+
+  if (!MONGODB_DB) {
+    throw new Error('Please define the MONGODB_DB environment variable');
+  }
+
+  const client = new MongoClient(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  await client.connect();
+  const db = client.db(MONGODB_DB);
+
+  // Cache the client and db connection if in production
+  if (isProd) {
+    cachedClient = client;
+    cachedDb = db;
+  }
+
+  return { client, db };
+}
+
+export async function getCollection(collectionName) {
+  const { db } = await connectToDatabase();
+  return db.collection(collectionName);
+}
+
+4. 
+import withAuth from '../../../middleware/withAuth';
+import { getCollection } from '../../../lib/mongodb';
+
+async function handler(req, res) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ success: false, message: 'Method not allowed' });
+  }
+
+  try {
+    const contentCollection = await getCollection('content');
+    
+    // Get content analytics
+    const totalContent = await contentCollection.countDocuments();
+    
+    // Get content by type
+    const contentByType = await contentCollection.aggregate([
+      { $group: { _id: '$type', count: { $sum: 1 } } }
+    ]).toArray();
+    
+    // Get recently consumed content
+    const recentContent = await contentCollection
+      .find({ consumed: true })
+      .sort({ consumedAt: -1 })
+      .limit(5)
+      .toArray();
+    
+    return res.status(200).json({
+      success: true,
+      data: {
+        totalContent,
+        contentByType,
+        recentContent
+      }
+    });
+  } catch (error) {
+    console.error('Content analytics error:', error);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+}
+
+export default withAuth(handler);
+
+5. 
+import withAuth from '../../../middleware/withAuth';
+import { getCollection } from '../../../lib/mongodb';
+
+async function handler(req, res) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ success: false, message: 'Method not allowed' });
+  }
+
+  try {
+    const contentCollection = await getCollection('content');
+    
+    // Get user's content history
+    const consumedContent = await contentCollection
+      .find({ consumed: true })
+      .sort({ consumedAt: -1 })
+      .toArray();
+    
+    // This is a simple recommendation algorithm
+    // In a real implementation, you might want to use more sophisticated 
+    // recommendation algorithms based on your preferences
+    
+    // Extract genres, creators, etc. from consumed content
+    const genres = new Set();
+    const creators = new Set();
+    
+    consumedContent.forEach(item => {
+      if (item.genres) {
+        item.genres.forEach(genre => genres.add(genre));
+      }
+      if (item.creator) {
+        creators.add(item.creator);
+      }
+    });
+    
+    // Find recommended content based on genres and creators
+    const recommendedContent = await contentCollection
+      .find({
+        consumed: { $ne: true },
+        $or: [
+          { genres: { $in: Array.from(genres) } },
+          { creator: { $in: Array.from(creators) } }
+        ]
+      })
+      .limit(10)
+      .toArray();
+    
+    return res.status(200).json({
+      success: true,
+      data: recommendedContent
+    });
+  } catch (error) {
+    console.error('Recommendations error:', error);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+}
+
+export default withAuth(handler);
+
+6.
+
+import withAuth from '../../../middleware/withAuth';
+import { getCollection } from '../../../lib/mongodb';
+
+async function handler(req, res) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ success: false, message: 'Method not allowed' });
+  }
+
+  try {
+    const transactionsCollection = await getCollection('transactions');
+    const subscriptionsCollection = await getCollection('subscriptions');
+    const cryptoCollection = await getCollection('crypto');
+    
+    // Get financial summary
+    const now = new Date();
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    
+    // Monthly expenses
+    const monthlyExpenses = await transactionsCollection.aggregate([
+      { 
+        $match: { 
+          type: 'expense', 
+          date: { $gte: firstDayOfMonth } 
+        } 
+      },
+      { 
+        $group: { 
+          _id: null, 
+          total: { $sum: '$amount' } 
+        } 
+      }
+    ]).toArray();
+    
+    // Monthly income
+    const monthlyIncome = await transactionsCollection.aggregate([
+      { 
+        $match: { 
+          type: 'income', 
+          date: { $gte: firstDayOfMonth } 
+        } 
+      },
+      { 
+        $group: { 
+          _id: null, 
+          total: { $sum: '$amount' } 
+        } 
+      }
+    ]).toArray();
+    
+    // Expenses by category
+    const expensesByCategory = await transactionsCollection.aggregate([
+      { 
+        $match: { 
+          type: 'expense', 
+          date: { $gte: firstDayOfMonth } 
+        } 
+      },
+      { 
+        $group: { 
+          _id: '$category', 
+          total: { $sum: '$amount' } 
+        } 
+      }
+    ]).toArray();
+    
+    // Active subscriptions
+    const activeSubscriptions = await subscriptionsCollection.find({
+      endDate: { $gt: now }
+    }).toArray();
+    
+    // Crypto portfolio value
+    const cryptoPortfolio = await cryptoCollection.find().toArray();
+    
+    return res.status(200).json({
+      success: true,
+      data: {
+        monthlyExpenses: monthlyExpenses[0]?.total || 0,
+        monthlyIncome: monthlyIncome[0]?.total || 0,
+        expensesByCategory,
+        activeSubscriptions,
+        cryptoPortfolio
+      }
+    });
+  } catch (error) {
+    console.error('Finance analytics error:', error);
+    return res.status(500).json({ success: false, message: 'Server error' });
+  }
+}
+
+export default withAuth(handler);
 
 
-
-----------------------------
-
-IMPORTANT PENDING TASKS - 
-Create a Login Page
-
-Add a simple login form to the frontend
-Implement authentication logic
-
-
-Integrate Frontend with API
-
-Connect your React components to the API endpoints
-Update your UI components to display data from the backend
-
-
-Data Import Functionality
-
-Finish implementing the data importers
-Add UI flows for importing CSV/TXT files
-
-Essentially make every feature we added so far functional 

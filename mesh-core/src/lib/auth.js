@@ -1,25 +1,33 @@
-import { verify } from 'jsonwebtoken';
-import { parse } from 'cookie';
+import jwt from 'jsonwebtoken';
 
-export function authenticateToken(req) {
-  // Try to get token from cookies first
-  const cookies = req.headers.cookie ? parse(req.headers.cookie) : {};
-  const cookieToken = cookies.auth;
-  
-  // Then try Authorization header as fallback
-  const authHeader = req.headers.authorization;
-  const headerToken = authHeader && authHeader.split(' ')[1];
-  
-  const token = cookieToken || headerToken;
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-replace-in-production';
 
-  if (!token) {
-    return { authenticated: false };
-  }
+export const generateToken = (userId) => {
+  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
+};
 
+export const verifyToken = (token) => {
   try {
-    const user = verify(token, process.env.JWT_SECRET);
-    return { authenticated: true, user };
-  } catch (err) {
-    return { authenticated: false };
+    return jwt.verify(token, JWT_SECRET);
+  } catch (error) {
+    return null;
   }
-}
+};
+
+export const getTokenFromHeader = (req) => {
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer ')
+  ) {
+    return req.headers.authorization.split(' ')[1];
+  }
+  return null;
+};
+
+export const getUserFromToken = (req) => {
+  const token = getTokenFromHeader(req);
+  if (!token) return null;
+  
+  const decoded = verifyToken(token);
+  return decoded?.userId || null;
+};

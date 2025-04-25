@@ -1,57 +1,47 @@
-import mongoose from 'mongoose';
+import { MongoClient } from 'mongodb';
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/meshOS';
+const MONGODB_DB = process.env.MONGODB_DB || 'meshOS';
 
-if (!MONGODB_URI) {
-  throw new Error(
-    'Please define the MONGODB_URI environment variable inside .env.local'
-  );
-}
+// Check if we're in a production environment
+const isProd = process.env.NODE_ENV === 'production';
 
-/**
- * Global is used here to maintain a cached connection across hot reloads
- * in development. This prevents connections growing exponentially
- * during API Route usage.
- */
-let cached = global.mongoose;
+let cachedClient = null;
+let cachedDb = null;
 
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
-
-async function dbConnect() {
-  if (cached.conn) {
-    return cached.conn;
+export async function connectToDatabase() {
+  // If we have the cached connection, use that
+  if (cachedClient && cachedDb) {
+    return { client: cachedClient, db: cachedDb };
   }
 
-  if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-      maxPoolSize: 10, // Maintain up to 10 socket connections
-      serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
-      socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-    };
-
-    cached.promise = mongoose.connect(MONGODB_URI, opts)
-      .then((mongoose) => {
-        console.log('Connected to MongoDB');
-        return mongoose;
-      })
-      .catch((error) => {
-        console.error('MongoDB connection error:', error);
-        cached.promise = null;
-        throw error;
-      });
+  // Otherwise connect and cache the connection
+  if (!MONGODB_URI) {
+    throw new Error('Please define the MONGODB_URI environment variable');
   }
 
-  try {
-    cached.conn = await cached.promise;
-  } catch (e) {
-    cached.promise = null;
-    throw e;
+  if (!MONGODB_DB) {
+    throw new Error('Please define the MONGODB_DB environment variable');
   }
 
-  return cached.conn;
+  const client = new MongoClient(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  await client.connect();
+  const db = client.db(MONGODB_DB);
+
+  // Cache the client and db connection if in production
+  if (isProd) {
+    cachedClient = client;
+    cachedDb = db;
+  }
+
+  return { client, db };
 }
 
-export default dbConnect;
+export async function getCollection(collectionName) {
+  const { db } = await connectToDatabase();
+  return db.collection(collectionName);
+}

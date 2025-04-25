@@ -2,7 +2,7 @@
 import dbConnect from '../../../../lib/mongodb';
 import Recommendation from '../../../../models/Recommendation';
 import Media from '../../../../models/Media';
-import withAuth from '../../../../middleware/withAuth';
+import withAuth from '../../../middleware/withAuth';
 
 async function handler(req, res) {
   const { id } = req.query;
