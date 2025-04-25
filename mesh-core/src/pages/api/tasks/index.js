@@ -4,7 +4,13 @@ import Task from '../../../models/Task';
 import withAuth from '../../../middleware/withAuth';
 
 async function handler(req, res) {
-  await dbConnect();
+  // Corrected: Use connectToDatabase() instead of the undefined dbConnect()
+  try {
+    await connectToDatabase(); 
+  } catch (error) {
+    console.error('Database connection error:', error);
+    return res.status(500).json({ message: 'Failed to connect to database.' });
+  }
   
   // GET - Fetch all tasks or with filters
   if (req.method === 'GET') {
@@ -45,7 +51,7 @@ async function handler(req, res) {
           query.dueDate = { $gte: today, $lt: nextWeek };
         } else if (req.query.due === 'overdue') {
           query.dueDate = { $lt: today };
-          query.status = { $ne: 'done' };
+          query.status = { $ne: 'done' }; // Assuming overdue tasks are not marked as done
         } else if (req.query.due === 'future') {
           query.dueDate = { $gt: today };
         } else if (req.query.due === 'none') {
