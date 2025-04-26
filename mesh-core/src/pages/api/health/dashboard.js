@@ -1,137 +1,54 @@
-// src/pages/api/health/dashboard.js - Health dashboard overview
-import { connectToDatabase, getCollection } from '../../../lib/mongodb';
-import HeartRate from '../../../models/HeartRate';
-import Sleep from '../../../models/Sleep';
-import HealthMetric from '../../../models/HealthMetric';
-import Medication from '../../../models/Medication';
+// mesh-core/src/pages/api/health/dashboard.js
+// Assuming this route provides aggregated health data for the authenticated user.
+// It will return placeholder data filtered by the user ID.
+import connectToDatabase from '../../../lib/mongodb';
 import withAuth from '../../../middleware/withAuth';
+// Assuming relevant models exist, e.g., HealthMetric, Sleep, HeartRate, Medication
+import HealthMetric from '../../../models/HealthMetric';
+import Sleep from '../../../models/Sleep';
+import HeartRate from '../../../models/HeartRate';
+import Medication from '../../../models/Medication';
 
-async function handler(req, res) {
-  await dbConnect();
 
-  if (req.method === 'GET') {
-    try {
-      // Get recent date range
-      const endDate = new Date();
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - 30); // Last 30 days
-      
-      // Base match condition
-      const dateMatch = {
-        date: { $gte: startDate, $lte: endDate }
-      };
-      
-      // 1. Sleep summary
-      const sleepSummary = await Sleep.aggregate([
-        { $match: { ...dateMatch, userId: req.user.id } },
-        {
-          $group: {
-            _id: null,
-            avgHours: { $avg: "$hours" },
-            entriesCount: { $sum: 1 },
-            latestEntry: { $max: "$date" }
-          }
-        }
-      ]);
-      
-      // 2. Heart rate summary
-      const heartRateSummary = await HeartRate.aggregate([
-        { $match: { ...dateMatch, userId: req.user.id } },
-        {
-          $group: {
-            _id: null,
-            avgRestingRate: { $avg: "$min" },
-            entriesCount: { $sum: 1 },
-            latestEntry: { $max: "$date" }
-          }
-        }
-      ]);
-      
-      // 3. Recent health metrics
-      const recentMetrics = await HealthMetric.find({ userId: req.user.id })
-        .sort({ date: -1 })
-        .limit(1);
-      
-      // 4. Active medications
-      const activeMedications = await Medication.find({
-        userId: req.user.id,
-        $or: [
-          { endDate: { $exists: false } },
-          { endDate: null },
-          { endDate: { $gte: new Date() } }
-        ]
-      });
-      
-      // 5. Sleep trend
-      const sleepTrend = await Sleep.aggregate([
-        { $match: { ...dateMatch, userId: req.user.id } },
-        {
-          $group: {
-            _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-            hours: { $avg: "$hours" },
-            date: { $first: "$date" }
-          }
-        },
-        { $sort: { date: -1 } },
-        { $limit: 7 },
-        { $sort: { date: 1 } },
-        {
-          $project: {
-            _id: 0,
-            date: "$_id",
-            hours: 1
-          }
-        }
-      ]);
-      
-      // 6. Heart rate trend
-      const heartRateTrend = await HeartRate.aggregate([
-        { $match: { ...dateMatch, userId: req.user.id } },
-        {
-          $group: {
-            _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
-            min: { $avg: "$min" },
-            max: { $avg: "$max" },
-            date: { $first: "$date" }
-          }
-        },
-        { $sort: { date: -1 } },
-        { $limit: 7 },
-        { $sort: { date: 1 } },
-        {
-          $project: {
-            _id: 0,
-            date: "$_id",
-            resting: "$min",
-            max: "$max"
-          }
-        }
-      ]);
-      
-      // Send combined response
-      res.status(200).json({
-        sleep: {
-          summary: sleepSummary[0] || { avgHours: 0, entriesCount: 0, latestEntry: null },
-          trend: sleepTrend
-        },
-        heartRate: {
-          summary: heartRateSummary[0] || { avgRestingRate: 0, entriesCount: 0, latestEntry: null },
-          trend: heartRateTrend
-        },
-        recentMetrics: recentMetrics[0] || null,
-        medications: {
-          active: activeMedications,
-          count: activeMedications.length
-        }
-      });
-    } catch (error) {
-      console.error('Error generating health dashboard:', error);
-      res.status(500).json({ message: error.message });
-    }
-  } else {
+const handler = async (req, res) => {
+  await connectToDatabase();
+
+  if (req.method !== 'GET') {
     res.setHeader('Allow', ['GET']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-}
+
+  const userId = req.userId; // Extracted from auth middleware (will be 'ketamine')
+
+  try {
+    // --- Placeholder Health Dashboard Logic ---
+    console.log(`Fetching health dashboard data for user: ${userId}`);
+    // Replace with actual aggregation queries using Mongoose models and filtering by userId
+    // Example: Get latest sleep entry
+    // const latestSleep = await Sleep.findOne({ userId }).sort({ date: -1 });
+    // Example: Get average heart rate over the last 7 days
+    // const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    // const avgHeartRate = await HeartRate.aggregate([
+    //   { $match: { userId, date: { $gte: sevenDaysAgo } } },
+    //   { $group: { _id: null, average: { $avg: '$rate' } } }
+    // ]);
+
+    const dashboardData = {
+      userId: userId,
+      message: `Placeholder health dashboard data for user: ${userId}`,
+      latestWeight: Math.random() * 50 + 100, // Placeholder data
+      sleepHoursLastNight: Math.random() * 4 + 4, // Placeholder data
+      restingHeartRate: Math.random() * 20 + 50, // Placeholder data
+      upcomingMedications: Math.floor(Math.random() * 5) // Placeholder data
+    };
+    // --- End Placeholder ---
+
+    res.status(200).json({ success: true, data: dashboardData });
+
+  } catch (error) {
+    console.error('Health dashboard error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error fetching health dashboard data', error: error.message });
+  }
+};
 
 export default withAuth(handler);

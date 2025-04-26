@@ -1,58 +1,41 @@
-// src/pages/api/tasks/completed.js - Enhanced with date range filtering
-import { connectToDatabase, getCollection } from '../../../lib/mongodb';
-import Task from '../../../models/Task';
+// mesh-core/src/pages/api/tasks/completed.js
+// Assuming this route fetches completed tasks for the authenticated user.
+import connectToDatabase from '../../../lib/mongodb';
+import Task from '../../../models/Task'; // Assuming Task model exists
 import withAuth from '../../../middleware/withAuth';
 
-async function handler(req, res) {
-  await dbConnect();
+const handler = async (req, res) => {
+  await connectToDatabase();
 
-  if (req.method === 'GET') {
-    try {
-      const query = { status: 'done' };
-      
-      // Add date range filtering
-      if (req.query.startDate || req.query.endDate) {
-        query.completedDate = {};
-        
-        if (req.query.startDate) {
-          query.completedDate.$gte = new Date(req.query.startDate);
-        }
-        
-        if (req.query.endDate) {
-          query.completedDate.$lte = new Date(req.query.endDate);
-        }
-      }
-      
-      // Filter by category if provided
-      if (req.query.category) {
-        query.category = req.query.category;
-      }
-      
-      // Get count of completed tasks
-      const count = await Task.countDocuments(query);
-      
-      // Get tasks if detailed=true
-      let tasks = [];
-      if (req.query.detailed === 'true') {
-        tasks = await Task.find(query).sort({ completedDate: -1 });
-      }
-      
-      const response = { count };
-      
-      // Add tasks to response if requested
-      if (req.query.detailed === 'true') {
-        response.tasks = tasks;
-      }
-      
-      res.status(200).json(response);
-    } catch (error) {
-      console.error('Error fetching completed tasks:', error);
-      res.status(500).json({ message: error.message });
-    }
-  } else {
+  if (req.method !== 'GET') {
     res.setHeader('Allow', ['GET']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-}
+
+  const userId = req.userId; // Extracted from auth middleware
+  const { limit } = req.query; // Optional limit parameter
+
+  try {
+    const query = { userId, completed: true }; // Filter by userId and completed status
+    let tasksQuery = Task.find(query).sort({ completedAt: -1 }); // Sort by completion date, adjust if needed
+
+    if (limit) {
+        const limitNum = parseInt(limit);
+        if (!isNaN(limitNum) && limitNum > 0) {
+            tasksQuery = tasksQuery.limit(limitNum);
+        } else {
+             console.warn(`Invalid limit parameter: ${limit}. Ignoring limit.`);
+        }
+    }
+
+    const tasks = await tasksQuery.exec();
+
+    res.status(200).json({ success: true, data: tasks });
+
+  } catch (error) {
+    console.error('Error fetching completed tasks:', error);
+    res.status(500).json({ success: false, message: 'Error fetching completed tasks', error: error.message });
+  }
+};
 
 export default withAuth(handler);

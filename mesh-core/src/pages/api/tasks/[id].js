@@ -1,121 +1,80 @@
-// src/pages/api/tasks/[id].js - CRUD operations for a specific task
-import { connectToDatabase, getCollection } from '../../../lib/mongodb';
-import Task from '../../../models/Task';
+// mesh-core/src/pages/api/tasks/[id].js
+import connectToDatabase from '../../../lib/mongodb';
+import Task from '../../../models/Task'; // Assuming Task model exists
 import withAuth from '../../../middleware/withAuth';
+import mongoose from 'mongoose';
 
-async function handler(req, res) {
+const handler = async (req, res) => {
+  await connectToDatabase();
+
   const { id } = req.query;
-  
-  if (!id) {
-    return res.status(400).json({ message: 'Task ID is required' });
+  const userId = req.userId; // Extracted from auth middleware
+
+  // Validate ObjectId
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ success: false, message: 'Invalid Task ID' });
   }
-  
-  await dbConnect();
-  
-  // GET - Fetch a specific task
-  if (req.method === 'GET') {
-    try {
-      const task = await Task.findById(id);
-      if (!task) {
-        return res.status(404).json({ message: 'Task not found' });
-      }
-      res.status(200).json(task);
-    } catch (error) {
-      console.error('Error fetching task:', error);
-      res.status(500).json({ message: error.message });
-    }
-  }
-  // PUT - Update a task
-  else if (req.method === 'PUT') {
-    try {
-      const updates = req.body;
-      
-      // Validate category enum if provided
-      if (updates.category) {
-        const validCategories = ['work', 'job_application', 'university', 'project', 'personal', 'cat', 'other'];
-        if (!validCategories.includes(updates.category)) {
-          return res.status(400).json({ 
-            message: 'Invalid category', 
-            allowed: validCategories
-          });
+
+  switch (req.method) {
+    case 'GET':
+      try {
+        const task = await Task.findOne({ _id: id, userId });
+        if (!task) {
+          return res.status(404).json({ success: false, message: 'Task not found' });
         }
+        res.status(200).json({ success: true, data: task });
+      } catch (error) {
+        console.error(`Error fetching task ${id}:`, error);
+        res.status(500).json({ success: false, message: `Error fetching task ${id}`, error: error.message });
       }
-      
-      // Validate priority enum if provided
-      if (updates.priority) {
-        const validPriorities = ['low', 'medium', 'high', 'urgent'];
-        if (!validPriorities.includes(updates.priority)) {
-          return res.status(400).json({ 
-            message: 'Invalid priority', 
-            allowed: validPriorities
-          });
-        }
-      }
-      
-      // Validate status enum if provided
-      if (updates.status) {
-        const validStatuses = ['todo', 'in_progress', 'blocked', 'done'];
-        if (!validStatuses.includes(updates.status)) {
-          return res.status(400).json({ 
-            message: 'Invalid status', 
-            allowed: validStatuses
-          });
-        }
-        
-        // If status is being set to 'done', record completion date
-        if (updates.status === 'done') {
-          updates.completedDate = new Date();
-        } else {
-          // If status is being changed from 'done' to something else, remove completion date
-          updates.completedDate = null;
-        }
-      }
-      
-      // Handle due date conversion
-      if (updates.dueDate) {
-        try {
-          updates.dueDate = new Date(updates.dueDate);
-          if (isNaN(updates.dueDate.getTime())) {
-            return res.status(400).json({ message: 'Invalid dueDate format' });
+      break;
+    case 'PUT':
+      try {
+        const updates = req.body;
+
+        // Validate category enum if provided (from snippet)
+        if (updates.category) {
+          const validCategories = ['work', 'job_application', 'university', 'project', 'personal', 'cat', 'other'];
+          if (!validCategories.includes(updates.category)) {
+            return res.status(400).json({
+              success: false,
+              message: `Invalid category: ${updates.category}. Valid categories are: ${validCategories.join(', ')}`
+            });
           }
-        } catch (err) {
-          return res.status(400).json({ message: 'Invalid dueDate format' });
         }
+
+        const updatedTask = await Task.findOneAndUpdate(
+          { _id: id, userId }, // Filter by ID and userId
+          updates,
+          { new: true, runValidators: true }
+        );
+
+        if (!updatedTask) {
+          return res.status(404).json({ success: false, message: 'Task not found or does not belong to user' });
+        }
+        res.status(200).json({ success: true, data: updatedTask });
+      } catch (error) {
+        console.error(`Error updating task ${id}:`, error);
+        res.status(400).json({ success: false, message: `Error updating task ${id}`, error: error.message });
       }
-      
-      const task = await Task.findByIdAndUpdate(id, updates, {
-        new: true,
-        runValidators: true
-      });
-      
-      if (!task) {
-        return res.status(404).json({ message: 'Task not found' });
+      break;
+    case 'DELETE':
+      try {
+        const deletedTask = await Task.findOneAndDelete({ _id: id, userId }); // Filter by ID and userId
+        if (!deletedTask) {
+          return res.status(404).json({ success: false, message: 'Task not found or does not belong to user' });
+        }
+        res.status(200).json({ success: true, data: deletedTask });
+      } catch (error) {
+        console.error(`Error deleting task ${id}:`, error);
+        res.status(500).json({ success: false, message: `Error deleting task ${id}`, error: error.message });
       }
-      
-      res.status(200).json(task);
-    } catch (error) {
-      console.error('Error updating task:', error);
-      res.status(400).json({ message: error.message });
-    }
+      break;
+    default:
+      res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
+      res.status(405).end(`Method ${req.method} Not Allowed`);
+      break;
   }
-  // DELETE - Delete a task
-  else if (req.method === 'DELETE') {
-    try {
-      const task = await Task.findByIdAndDelete(id);
-      if (!task) {
-        return res.status(404).json({ message: 'Task not found' });
-      }
-      res.status(200).json({ message: 'Task deleted successfully' });
-    } catch (error) {
-      console.error('Error deleting task:', error);
-      res.status(500).json({ message: error.message });
-    }
-  }
-  // Not allowed
-  else {
-    res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-}
+};
 
 export default withAuth(handler);

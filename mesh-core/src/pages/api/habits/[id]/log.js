@@ -1,117 +1,72 @@
-// src/pages/api/habits/[id]/log.js - Enhanced with better error handling
-import { connectToDatabase, getCollection } from '../../../../lib/mongodb';
-import HabitEntry from '../../../../models/HabitEntry';
-import Habit from '../../../../models/Habit';
-import withAuth from '../../../../middleware/withAuth';
+// mesh-core/src/pages/api/habits/[id]/log.js
+// Assuming this route is for logging entries for a specific habit.
+import connectToDatabase from '../../../lib/mongodb';
+import Habit from '../../../models/Habit'; // Assuming Habit model exists
+import HabitEntry from '../../../models/HabitEntry'; // Assuming HabitEntry model exists
+import withAuth from '../../../middleware/withAuth';
+import mongoose from 'mongoose';
 
-async function handler(req, res) {
-  const { id } = req.query;
-  
-  if (!id) {
-    return res.status(400).json({ message: 'Habit ID is required' });
+const handler = async (req, res) => {
+  await connectToDatabase();
+
+  const { id } = req.query; // Habit ID
+  const userId = req.userId; // Extracted from auth middleware
+
+  // Validate Habit ID
+   if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ success: false, message: 'Invalid Habit ID for logging' });
   }
-  
-  await dbConnect();
-  
-  // POST - Log a habit entry
-  if (req.method === 'POST') {
-    try {
-      // First verify that the habit exists
-      const habit = await Habit.findById(id);
-      if (!habit) {
-        return res.status(404).json({ message: 'Habit not found' });
-      }
-      
-      const { date = new Date(), value = 1, notes } = req.body;
-      
-      // Validate date format
-      const entryDate = new Date(date);
-      if (isNaN(entryDate.getTime())) {
-        return res.status(400).json({ message: 'Invalid date format' });
-      }
-      
-      // Normalize the date to midnight to avoid time-based duplicates
-      entryDate.setHours(0, 0, 0, 0);
-      
-      // Create or update the habit entry
-      const habitEntry = await HabitEntry.findOneAndUpdate(
-        { habitId: id, date: entryDate },
-        { value, notes },
-        { upsert: true, new: true }
-      );
-      
-      res.status(201).json(habitEntry);
-    } catch (error) {
-      // Handle duplicate entry errors gracefully
-      if (error.code === 11000) {
-        return res.status(409).json({ 
-          message: 'Entry already exists for this date',
-          error: 'DUPLICATE_ENTRY'
+
+  switch (req.method) {
+    case 'POST': // Log a new entry
+      try {
+        // Check if the habit exists and belongs to the user
+        const habit = await Habit.findOne({ _id: id, userId });
+        if (!habit) {
+          return res.status(404).json({ success: false, message: 'Habit not found or does not belong to user' });
+        }
+
+        // Create a new habit entry
+        const entry = new HabitEntry({
+          habitId: id,
+          userId: userId,
+          date: req.body.date || new Date(), // Use provided date or current date
+          notes: req.body.notes, // Optional notes
+          // Add other entry fields as per your HabitEntry model
         });
+
+        const newEntry = await entry.save();
+
+        // Optional: Update the parent Habit document (e.g., last completed date)
+        // await Habit.findByIdAndUpdate(id, { lastCompleted: newEntry.date });
+
+
+        res.status(201).json({ success: true, data: newEntry });
+      } catch (error) {
+        console.error(`Error logging habit entry for habit ${id}:`, error);
+        res.status(400).json({ success: false, message: `Error logging habit entry for habit ${id}`, error: error.message });
       }
-      
-      console.error('Error logging habit:', error);
-      res.status(400).json({ message: error.message });
-    }
-  }
-  // GET - Get all entries for a habit
-  else if (req.method === 'GET') {
-    try {
-      const { startDate, endDate } = req.query;
-      const query = { habitId: id };
-      
-      // Add date range filtering if provided
-      if (startDate || endDate) {
-        query.date = {};
-        
-        if (startDate) {
-          query.date.$gte = new Date(startDate);
+      break;
+    case 'GET': // Get entries for a specific habit
+      try {
+         // Check if the habit exists and belongs to the user
+        const habitExists = await Habit.exists({ _id: id, userId });
+         if (!habitExists) {
+          return res.status(404).json({ success: false, message: 'Habit not found or does not belong to user' });
         }
-        
-        if (endDate) {
-          query.date.$lte = new Date(endDate);
-        }
+
+        const entries = await HabitEntry.find({ habitId: id, userId }).sort({ date: -1 });
+        res.status(200).json({ success: true, data: entries });
+      } catch (error) {
+        console.error(`Error fetching habit entries for habit ${id}:`, error);
+        res.status(500).json({ success: false, message: `Error fetching habit entries for habit ${id}`, error: error.message });
       }
-      
-      const entries = await HabitEntry
-        .find(query)
-        .sort({ date: -1 });
-      
-      res.status(200).json(entries);
-    } catch (error) {
-      console.error('Error fetching habit entries:', error);
-      res.status(500).json({ message: error.message });
-    }
+      break;
+    default:
+      res.setHeader('Allow', ['GET', 'POST']);
+      res.status(405).end(`Method ${req.method} Not Allowed`);
+      break;
   }
-  // DELETE - Delete a habit entry
-  else if (req.method === 'DELETE') {
-    try {
-      const { date } = req.body;
-      
-      if (!date) {
-        return res.status(400).json({ message: 'Date is required' });
-      }
-      
-      const entryDate = new Date(date);
-      entryDate.setHours(0, 0, 0, 0);
-      
-      const result = await HabitEntry.deleteOne({ habitId: id, date: entryDate });
-      
-      if (result.deletedCount === 0) {
-        return res.status(404).json({ message: 'Entry not found' });
-      }
-      
-      res.status(200).json({ message: 'Entry deleted successfully' });
-    } catch (error) {
-      console.error('Error deleting habit entry:', error);
-      res.status(500).json({ message: error.message });
-    }
-  }
-  // Not allowed
-  else {
-    res.setHeader('Allow', ['GET', 'POST', 'DELETE']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-}
+};
 
 export default withAuth(handler);

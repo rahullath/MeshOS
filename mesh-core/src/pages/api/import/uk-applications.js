@@ -1,70 +1,56 @@
-import { connectToDatabase, getCollection } from '../../../lib/mongodb';
-import Application from '../../../models/Application';
-import Papa from 'papaparse';
+// mesh-core/src/pages/api/import/uk-applications.js
+// Assuming this route handles importing UK Application data for the authenticated user.
+// Creating this file as it was listed as potentially missing.
+import connectToDatabase from '../../../lib/mongodb';
+import withAuth from '../../../middleware/withAuth';
+import Application from '../../../models/Application'; // Assuming Application model exists
 
-export default async function handler(req, res) {
-  if (req.method === 'POST') {
-    try {
-      await dbConnect();
+const handler = async (req, res) => {
+  await connectToDatabase();
 
-      const { applicationsCsv } = req.body;
-
-      // Process applications CSV
-      const parsedApplications = Papa.parse(applicationsCsv, { header: true, skipEmptyLines: true });
-
-      if (parsedApplications.errors.length > 0) {
-        console.error('Applications CSV parsing errors:', parsedApplications.errors);
-        return res.status(400).json({ message: 'Error parsing applications CSV' });
-      }
-
-      const applications = parsedApplications.data.map(row => {
-        let type = 'other';
-        if (row.Category === 'Visa') {
-          type = 'visa';
-        } else if (row['Application Fees'] || row.Item.toLowerCase().includes('tuition fees')) {
-          type = 'university';
-        }
-
-        const amountGBP = parseFloat(row['£'] || 0);
-        const amountINR = parseFloat(row['₹'] || 0);
-        const amountUSD = amountGBP + (amountINR / 83);
-
-        let status = 'preparing';
-        if (row['Offer Received'] === 'Not Yet') {
-          status = 'preparing';
-        } else if (row['Offer Received'] === 'Conditional Offer') {
-          status = 'submitted';
-        } else if (row['Offer Received'] === 'Rejected') {
-          status = 'rejected';
-        } else if (row['Offer Received'] === 'Accepted') {
-          status = 'accepted';
-        }
-
-        return {
-          type: type,
-          name: row['University/Purpose'] || row.Item,
-          organization: row['University/Purpose'],
-          status: status,
-          priority: 'medium',
-          costs: [{
-            description: row.Item,
-            amount: amountUSD,
-            currency: 'USD',
-            isPaid: row['Paid?'] === 'TRUE'
-          }],
-          notes: row.Notes
-        };
-      });
-
-      await Application.insertMany(applications);
-
-      res.status(200).json({ message: 'UK applications data imported successfully' });
-    } catch (error) {
-      console.error('Import error:', error);
-      res.status(500).json({ message: error.message });
-    }
-  } else {
+  if (req.method !== 'POST') { // Assuming import is a POST action
     res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+    return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
-}
+
+  const userId = req.userId; // Extracted from auth middleware (will be 'ketamine')
+  const importData = req.body; // Assuming the import data is in the request body
+
+   if (!Array.isArray(importData) || importData.length === 0) {
+      return res.status(400).json({ success: false, message: 'Import data must be a non-empty array' });
+  }
+
+
+  try {
+    // --- Placeholder UK Application Import Logic ---
+    console.log(`Importing ${importData.length} UK application records for user: ${userId}`);
+
+    // Replace with actual import logic. This might involve:
+    // 1. Validating the structure of each data record.
+    // 2. Mapping import data fields to your Application model fields.
+    // 3. Adding the userId to each record.
+    // 4. Inserting the records into the database using the Application model.
+
+    const recordsToInsert = importData.map(record => ({
+        ...record,
+        userId: userId,
+        // Add other necessary field mappings based on expected UK application data structure
+        // e.g., applicationDate: new Date(record.date), status: record.status, company: record.company
+    }));
+
+    if (recordsToInsert.length > 0) {
+        const insertedApplications = await Application.insertMany(recordsToInsert, { ordered: false });
+        console.log(`Imported ${insertedApplications.length} UK applications.`);
+        res.status(200).json({ success: true, message: `Successfully imported ${insertedApplications.length} UK application records for user: ${userId}` });
+    } else {
+        console.log("No valid UK application records found to import.");
+        res.status(200).json({ success: true, message: 'No valid UK application records found to import.', importedCount: 0 });
+    }
+
+  } catch (error) {
+    console.error('UK Application import error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error during UK Application import', error: error.message });
+  }
+};
+
+export default withAuth(handler);

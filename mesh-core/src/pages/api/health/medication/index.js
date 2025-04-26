@@ -1,80 +1,38 @@
-// src/pages/api/health/medication/index.js - CRUD for medication tracking
-import { connectToDatabase, getCollection } from '../../../../lib/mongodb';
-import Medication from '../../../../models/Medication';
-import withAuth from '../../../../middleware/withAuth';
+// mesh-core/src/pages/api/health/medication/index.js
+import connectToDatabase from '../../../lib/mongodb';
+import Medication from '../../../models/Medication'; // Assuming Medication model exists
+import withAuth from '../../../middleware/withAuth';
 
-async function handler(req, res) {
-  await dbConnect();
+const handler = async (req, res) => {
+  await connectToDatabase();
 
-  // GET - Fetch all medications
-  if (req.method === 'GET') {
-    try {
-      const medications = await Medication.find({ userId: req.user.id })
-        .sort({ name: 1 });
-      
-      res.status(200).json(medications);
-    } catch (error) {
-      console.error('Error fetching medications:', error);
-      res.status(500).json({ message: error.message });
-    }
+  const userId = req.userId; // Extracted from auth middleware
+
+  switch (req.method) {
+    case 'GET':
+      try {
+        const medications = await Medication.find({ userId }).sort({ name: 1 });
+        res.status(200).json({ success: true, data: medications });
+      } catch (error) {
+        console.error('Error fetching medications:', error);
+        res.status(500).json({ success: false, message: 'Error fetching medications', error: error.message });
+      }
+      break;
+    case 'POST':
+      try {
+        const medication = new Medication({ ...req.body, userId });
+        const newMedication = await medication.save();
+        res.status(201).json({ success: true, data: newMedication });
+      } catch (error) {
+        console.error('Error creating medication:', error);
+        res.status(400).json({ success: false, message: 'Error creating medication', error: error.message });
+      }
+      break;
+    default:
+      res.setHeader('Allow', ['GET', 'POST']);
+      res.status(405).end(`Method ${req.method} Not Allowed`);
+      break;
   }
-  // POST - Create a new medication
-  else if (req.method === 'POST') {
-    try {
-      // Validate required fields
-      const { name } = req.body;
-      
-      if (!name) {
-        return res.status(400).json({
-          message: 'Missing required fields',
-          required: ['name']
-        });
-      }
-      
-      // Parse dates if provided
-      if (req.body.startDate) {
-        try {
-          req.body.startDate = new Date(req.body.startDate);
-          if (isNaN(req.body.startDate.getTime())) {
-            return res.status(400).json({ message: 'Invalid startDate format' });
-          }
-        } catch (err) {
-          return res.status(400).json({ message: 'Invalid startDate format' });
-        }
-      }
-      
-      if (req.body.endDate) {
-        try {
-          req.body.endDate = new Date(req.body.endDate);
-          if (isNaN(req.body.endDate.getTime())) {
-            return res.status(400).json({ message: 'Invalid endDate format' });
-          }
-        } catch (err) {
-          return res.status(400).json({ message: 'Invalid endDate format' });
-        }
-      }
-      
-      // Validate that endDate is after startDate if both are provided
-      if (req.body.startDate && req.body.endDate && req.body.startDate > req.body.endDate) {
-        return res.status(400).json({ message: 'endDate must be after startDate' });
-      }
-      
-      // Create medication
-      const medication = new Medication({
-        ...req.body,
-        userId: req.user.id
-      });
-      
-      const newMedication = await medication.save();
-      res.status(201).json(newMedication);
-    } catch (error) {
-      console.error('Error creating medication:', error);
-      res.status(400).json({ message: error.message });
-    }
-  } else {
-    res.setHeader('Allow', ['GET', 'POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-}
+};
 
 export default withAuth(handler);
