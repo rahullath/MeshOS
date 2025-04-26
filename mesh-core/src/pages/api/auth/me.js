@@ -1,8 +1,8 @@
 // mesh-core/src/pages/api/auth/me.js
 // This route requires authentication, so we apply withAuth.
 // It returns the authenticated user's information (derived from req.userId set by withAuth).
-import connectToDatabase from 'lib/mongodb';
-import withAuth from 'middleware/withAuth';
+import connectToDatabase from '../../../lib/mongodb';
+import withAuth from '../../../middleware/withAuth';
 // Optional: import User model if you need to fetch full user detailsmport User from '../../../models/User';
 
 const handler = async (req, res) => {

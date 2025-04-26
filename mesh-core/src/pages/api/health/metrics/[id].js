@@ -1,7 +1,7 @@
 // mesh-core/src/pages/api/health/metrics/[id].js
-import connectToDatabase from 'lib/mongodb';
-import HealthMetric from 'models/HealthMetric'; // Assuming HealthMetric model exists
-import withAuth from 'middleware/withAuth';
+import connectToDatabase from '../../../../lib/mongodb';
+import HealthMetric from '../../../../models/HealthMetric'; // Assuming HealthMetric model exists
+import withAuth from '../../../../middleware/withAuth';
 import mongoose from 'mongoose';
 
 const handler = async (req, res) => {

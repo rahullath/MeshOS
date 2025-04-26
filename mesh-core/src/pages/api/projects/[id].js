@@ -1,7 +1,7 @@
 // mesh-core/src/pages/api/projects/[id].js
-import connectToDatabase from 'lib/mongodb';
-import Project from 'models/Project'; // Assuming Project model exists
-import withAuth from 'middleware/withAuth';
+import connectToDatabase from '../../../lib/mongodb';
+import Project from '../../../models/Project'; // Assuming Project model exists
+import withAuth from '../../../middleware/withAuth';
 import mongoose from 'mongoose';
 
 const handler = async (req, res) => {

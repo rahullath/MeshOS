@@ -1,8 +1,8 @@
 // mesh-core/src/pages/api/tasks/completed.js
 // Assuming this route fetches completed tasks for the authenticated user.
-import connectToDatabase from 'lib/mongodb';
-import Task from 'models/Task'; // Assuming Task model exists
-import withAuth from 'middleware/withAuth';
+import connectToDatabase from '../../../lib/mongodb';
+import Task from '../../../models/Task'; // Assuming Task model exists
+import withAuth from '../../../middleware/withAuth';
 
 const handler = async (req, res) => {
   await connectToDatabase();

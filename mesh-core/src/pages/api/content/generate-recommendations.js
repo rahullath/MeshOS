@@ -1,8 +1,8 @@
 // mesh-core/src/pages/api/content/generate-recommendations.js
 // Assuming this route triggers generation of recommendations for the authenticated user.
 // It will return a success message with the user ID.
-import connectToDatabase from 'lib/mongodb';
-import withAuth from 'middleware/withAuth';
+import connectToDatabase from '../../../lib/mongodb';
+import withAuth from '../../../middleware/withAuth';
 // Assuming relevant models exist, e.g., Recommendation
 // import Recommendation from '../../../models/Recommendation';
 

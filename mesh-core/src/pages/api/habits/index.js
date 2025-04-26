@@ -1,7 +1,7 @@
 // mesh-core/src/pages/api/habits/index.js
-import connectToDatabase from 'lib/mongodb';
-import Habit from 'models/Habit'; // Assuming Habit model exists
-import withAuth from 'middleware/withAuth';
+import connectToDatabase from '../../../lib/mongodb';
+import Habit from '../../../models/Habit'; // Assuming Habit model exists
+import withAuth from '../../../middleware/withAuth';
 
 const handler = async (req, res) => {
   await connectToDatabase();

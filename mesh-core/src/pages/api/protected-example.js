@@ -1,5 +1,5 @@
-import withAuth from 'middleware/withAuth';
-import connectToDatabase from 'lib/mongodb';
+import withAuth from '../../middleware/withAuth';
+import connectToDatabase from '../../lib/mongodb';
 
 /**
  * Protected API route example

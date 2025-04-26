@@ -1,5 +1,5 @@
-import connectToDatabase from 'lib/mongodb';
-import withAuth from 'middleware/withAuth';
+import connectToDatabase from '../../../lib/mongodb';
+import withAuth from '../../../middleware/withAuth';
 import mongoose from 'mongoose';
 
 // Define the Application schema here to avoid import issues

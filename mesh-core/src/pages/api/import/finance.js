@@ -1,7 +1,7 @@
 // mesh-core/src/pages/api/import/finance.js
 // Assuming this route handles importing finance data for the authenticated user.
-import connectToDatabase from 'lib/mongodb';
-import withAuth from 'middleware/withAuth';
+import connectToDatabase from '../../../lib/mongodb';
+import withAuth from '../../../middleware/withAuth';
 // Assuming relevant models exist, e.g., FinanceTransaction
 import FinanceTransaction from '../../../models/FinanceTransaction';
 

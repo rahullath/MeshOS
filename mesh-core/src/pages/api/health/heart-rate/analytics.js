@@ -1,8 +1,8 @@
 // mesh-core/src/pages/api/health/heart-rate/analytics.js
 // Assuming this route provides analytics for heart rate data for the authenticated user.
-import connectToDatabase from 'lib/mongodb';
-import HeartRate from 'models/HeartRate'; // Assuming HeartRate model exists
-import withAuth from 'middleware/withAuth';
+import connectToDatabase from '../../../../lib/mongodb';
+import HeartRate from '../../../../models/HeartRate'; // Assuming HeartRate model exists
+import withAuth from '../../../../middleware/withAuth';
 
 const handler = async (req, res) => {
   await connectToDatabase();

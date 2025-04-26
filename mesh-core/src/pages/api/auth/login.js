@@ -3,10 +3,10 @@
 // We won't apply withAuth to the login endpoint itself as that would require
 // authentication to log in. The logic inside should handle auth credentials.
 // Assuming a basic username/password check and token generation.
-import connectToDatabase from 'lib/mongodb';
+import connectToDatabase from '../../../lib/mongodb';
 // Assuming User model exists and verifyPassword/generateToken functions exist
 import User from '../../../models/User';
-import { generateToken } from 'lib/auth'; // Assuming generateToken exists
+import { generateToken } from '../../../lib/auth'; // Assuming generateToken exists
 
 const handler = async (req, res) => {
   await connectToDatabase();

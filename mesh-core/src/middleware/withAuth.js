@@ -1,5 +1,5 @@
 // Support both import styles
-import { verifyToken } from 'lib/auth';
+import { verifyToken } from '../lib/auth';
 
 /**
  * Authentication middleware for API routes

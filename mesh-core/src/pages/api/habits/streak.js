@@ -1,9 +1,9 @@
 // mesh-core/src/pages/api/habits/streak.js
 // Assuming this route calculates or provides streak information for habits.
-import connectToDatabase from 'lib/mongodb';
-import Habit from 'models/Habit'; // Assuming Habit model exists
-import HabitEntry from 'models/HabitEntry'; // Assuming HabitEntry model exists for tracking
-import withAuth from 'middleware/withAuth';
+import connectToDatabase from '../../../lib/mongodb';
+import Habit from '../../../models/Habit'; // Assuming Habit model exists
+import HabitEntry from '../../../models/HabitEntry'; // Assuming HabitEntry model exists for tracking
+import withAuth from '../../../middleware/withAuth';
 import mongoose from 'mongoose';
 
 const handler = async (req, res) => {
