@@ -1,49 +1,63 @@
 import { useState, useEffect } from 'react';
-import { runApiDiagnostics } from '../utils/apiDebug';
 
 export default function DebugPanel() {
   const [isOpen, setIsOpen] = useState(false);
-  const [diagnostics, setDiagnostics] = useState(null);
+  const [projectInfo, setProjectInfo] = useState({});
   const [loading, setLoading] = useState(false);
-  const [environment, setEnvironment] = useState({});
 
-  const runDiagnostics = async () => {
+  useEffect(() => {
+    if (isOpen) {
+      collectDebugInfo();
+    }
+  }, [isOpen]);
+
+  const collectDebugInfo = () => {
     setLoading(true);
+    
     try {
-      const results = await runApiDiagnostics();
-      setDiagnostics(results);
+      // Collect environment info
+      const envInfo = {
+        nodeEnv: process.env.NODE_ENV,
+        nextVersion: require('next/package.json').version,
+        reactVersion: require('react/package.json').version,
+      };
+
+      // Collect runtime info
+      const runtimeInfo = {
+        url: typeof window !== 'undefined' ? window.location.href : 'SSR Mode',
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'SSR Mode',
+        screenSize: typeof window !== 'undefined' ? `${window.innerWidth}x${window.innerHeight}` : 'SSR Mode',
+        darkMode: typeof window !== 'undefined' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'SSR Mode',
+        timestamp: new Date().toISOString(),
+      };
+
+      // Check path resolution
+      const pathInfo = {
+        paths: {
+          '@': 'src',
+          'middleware': 'src/middleware',
+          'lib': 'src/lib',
+          'models': 'src/models',
+        }
+      };
+
+      setProjectInfo({
+        envInfo,
+        runtimeInfo,
+        pathInfo,
+      });
     } catch (error) {
-      console.error('Diagnostics error:', error);
+      console.error('Error collecting debug info:', error);
+      setProjectInfo({
+        error: String(error),
+      });
     } finally {
       setLoading(false);
     }
   };
 
-  const getEnvironmentInfo = () => {
-    setEnvironment({
-      url: window.location.href,
-      userAgent: navigator.userAgent,
-      screenWidth: window.innerWidth,
-      screenHeight: window.innerHeight,
-      darkMode: window.matchMedia('(prefers-color-scheme: dark)').matches,
-      timestamp: new Date().toISOString(),
-    });
-  };
-
-  useEffect(() => {
-    if (isOpen) {
-      getEnvironmentInfo();
-      runDiagnostics();
-    }
-  }, [isOpen]);
-
   const togglePanel = () => {
     setIsOpen(!isOpen);
-  };
-
-  const refreshDiagnostics = () => {
-    getEnvironmentInfo();
-    runDiagnostics();
   };
 
   return (
@@ -51,11 +65,10 @@ export default function DebugPanel() {
       {/* Debug Button */}
       <button
         onClick={togglePanel}
-        className="bg-gray-800 text-white p-2 m-4 rounded-full shadow-lg hover:bg-gray-700 focus:outline-none"
+        className="bg-blue-600 text-white p-2 m-4 rounded-full shadow-lg hover:bg-blue-700 focus:outline-none"
         title="Debug Panel"
       >
         <svg 
-          xmlns="http://www.w3.org/2000/svg" 
           width="24" 
           height="24" 
           viewBox="0 0 24 24" 
@@ -77,123 +90,78 @@ export default function DebugPanel() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl overflow-hidden w-11/12 max-w-4xl max-h-[90vh] flex flex-col">
             <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center bg-gray-50 dark:bg-gray-900">
               <h3 className="text-lg font-medium text-gray-900 dark:text-white">MeshOS Debug Panel</h3>
-              <div className="flex space-x-2">
-                <button
-                  onClick={refreshDiagnostics}
-                  className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white"
-                  title="Refresh"
+              <button
+                onClick={togglePanel}
+                className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white"
+                title="Close"
+              >
+                <svg 
+                  width="18" 
+                  height="18" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
                 >
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="18" 
-                    height="18" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
-                  >
-                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38"></path>
-                  </svg>
-                </button>
-                <button
-                  onClick={togglePanel}
-                  className="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-white"
-                  title="Close"
-                >
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="18" 
-                    height="18" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
-                  >
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                  </svg>
-                </button>
-              </div>
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
             </div>
             
             <div className="flex-1 overflow-auto p-6">
-              {/* Environment Info */}
-              <div className="mb-6">
-                <h4 className="text-md font-medium text-gray-900 dark:text-white mb-2">Environment</h4>
-                <div className="bg-gray-50 dark:bg-gray-900 rounded-md p-4 text-sm font-mono overflow-x-auto">
-                  <pre className="text-gray-800 dark:text-gray-200">
-                    {JSON.stringify(environment, null, 2)}
-                  </pre>
+              {loading ? (
+                <div className="flex items-center justify-center p-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  <span className="ml-3 text-gray-600 dark:text-gray-400">Loading debug info...</span>
                 </div>
-              </div>
-              
-              {/* API Diagnostics */}
-              <div>
-                <h4 className="text-md font-medium text-gray-900 dark:text-white mb-2">API Diagnostics</h4>
-                {loading ? (
-                  <div className="flex items-center justify-center p-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                    <span className="ml-3 text-gray-600 dark:text-gray-400">Running diagnostics...</span>
+              ) : (
+                <>
+                  {/* Environment Info */}
+                  <div className="mb-6">
+                    <h4 className="text-md font-medium text-gray-900 dark:text-white mb-2">Environment</h4>
+                    <div className="bg-gray-50 dark:bg-gray-900 rounded-md p-4 text-sm font-mono overflow-x-auto">
+                      <pre className="text-gray-800 dark:text-gray-200">
+                        {JSON.stringify(projectInfo.envInfo, null, 2)}
+                      </pre>
+                    </div>
                   </div>
-                ) : diagnostics ? (
-                  <div className="bg-gray-50 dark:bg-gray-900 rounded-md p-4 text-sm overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                      <thead>
-                        <tr>
-                          <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Endpoint</th>
-                          <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                          <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Response</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                        {Object.entries(diagnostics).map(([endpoint, info]) => (
-                          <tr key={endpoint}>
-                            <td className="px-4 py-2 text-sm font-mono text-gray-800 dark:text-gray-200">{endpoint}</td>
-                            <td className="px-4 py-2">
-                              <span
-                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                                  info.ok
-                                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                                    : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                                }`}
-                              >
-                                {info.status}
-                              </span>
-                            </td>
-                            <td className="px-4 py-2 text-sm font-mono text-gray-800 dark:text-gray-200">
-                              {info.error ? (
-                                <span className="text-red-600 dark:text-red-400">{info.error}</span>
-                              ) : (
-                                info.data || 'No data'
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                  
+                  {/* Runtime Info */}
+                  <div className="mb-6">
+                    <h4 className="text-md font-medium text-gray-900 dark:text-white mb-2">Runtime</h4>
+                    <div className="bg-gray-50 dark:bg-gray-900 rounded-md p-4 text-sm font-mono overflow-x-auto">
+                      <pre className="text-gray-800 dark:text-gray-200">
+                        {JSON.stringify(projectInfo.runtimeInfo, null, 2)}
+                      </pre>
+                    </div>
                   </div>
-                ) : (
-                  <div className="bg-gray-50 dark:bg-gray-900 rounded-md p-4 text-center text-gray-500 dark:text-gray-400">
-                    No diagnostics data available
+                  
+                  {/* Path Resolution */}
+                  <div className="mb-6">
+                    <h4 className="text-md font-medium text-gray-900 dark:text-white mb-2">Path Resolution</h4>
+                    <div className="bg-gray-50 dark:bg-gray-900 rounded-md p-4 text-sm font-mono overflow-x-auto">
+                      <pre className="text-gray-800 dark:text-gray-200">
+                        {JSON.stringify(projectInfo.pathInfo, null, 2)}
+                      </pre>
+                    </div>
                   </div>
-                )}
-              </div>
-              
-              {/* Debug Instructions */}
-              <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900 rounded-md">
-                <h4 className="text-md font-medium text-blue-800 dark:text-blue-200 mb-2">Troubleshooting Steps</h4>
-                <ol className="list-decimal list-inside text-sm text-blue-700 dark:text-blue-300 space-y-1">
-                  <li>Check if API endpoints are responding with 200 status codes</li>
-                  <li>Verify that MongoDB connection is working properly</li>
-                  <li>Make sure authentication is properly configured</li>
-                  <li>Check browser console for JavaScript errors</li>
-                  <li>Verify that environment variables are set correctly</li>
-                </ol>
-              </div>
+                  
+                  {/* Debug Instructions */}
+                  <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900 rounded-md">
+                    <h4 className="text-md font-medium text-blue-800 dark:text-blue-200 mb-2">Troubleshooting Recommendations</h4>
+                    <ol className="list-decimal list-inside text-sm text-blue-700 dark:text-blue-300 space-y-1">
+                      <li>Check jsconfig.json path aliases match your import statements</li>
+                      <li>Ensure all import paths begin with @ for absolute imports</li>
+                      <li>Verify MongoDB connection string is properly set in environment variables</li>
+                      <li>Check that required middleware files exist and are correctly imported</li>
+                      <li>Verify that environment variables are set correctly</li>
+                    </ol>
+                  </div>
+                </>
+              )}
             </div>
             
             <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">

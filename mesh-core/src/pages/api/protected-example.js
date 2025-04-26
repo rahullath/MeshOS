@@ -1,29 +1,35 @@
-import withAuth from '../../middleware/withAuth'; // Import the authentication middleware
-import { connectToDatabase } from '../../lib/mongodb'; // Import the database connection utility
+import withAuth from 'middleware/withAuth';
+import connectToDatabase from 'lib/mongodb';
 
+/**
+ * Protected API route example
+ * This route is protected by the authentication middleware
+ * @param {object} req - The request object
+ * @param {object} res - The response object
+ */
 async function handler(req, res) {
   // This will only execute if the user is authenticated by the withAuth middleware
   try {
     // Establish a connection to the MongoDB database
-    const { db } = await connectToDatabase();
-
-    // Access the 'testCollection' collection (or create it if it doesn't exist)
-    const collection = db.collection('testCollection');
-
-    // Find all documents in the collection
-    const data = await collection.find({}).toArray();
-
-    // Return the data in the response
+    const conn = await connectToDatabase();
+    
+    // We can access database collections through the connection
+    // For this example, we'll just return a successful response
     res.status(200).json({
+      success: true,
       message: 'This is a protected endpoint',
       user: req.userId, // Show the user ID from the auth middleware
-      data: data // Send the fetched data
+      serverTime: new Date().toISOString()
     });
   } catch (error) {
-    console.error('Error fetching data:', error);
-    res.status(500).json({ message: 'Internal server error' }); // Handle errors gracefully
+    console.error('Error in protected endpoint:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Internal server error',
+      error: error.message
+    });
   }
 }
 
-export default withAuth(handler); // Wrap the handler with the authentication middleware
-
+// Wrap the handler with the authentication middleware
+export default withAuth(handler);

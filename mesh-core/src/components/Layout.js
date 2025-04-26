@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
+import DebugPanel from './Debug';
 
 export default function Layout({ children }) {
   const router = useRouter();
@@ -126,6 +127,7 @@ export default function Layout({ children }) {
         <main className="flex-1 overflow-auto bg-gray-100 dark:bg-gray-900">
           {children}
         </main>
+        <DebugPanel />
       </div>
     </div>
   );
