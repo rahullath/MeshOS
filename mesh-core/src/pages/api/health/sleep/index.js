@@ -1,7 +1,7 @@
 // mesh-core/src/pages/api/health/sleep/index.js
-import connectToDatabase from '../../../lib/mongodb';
-import Sleep from '../../../models/Sleep'; // Assuming Sleep model exists
-import withAuth from '../../../middleware/withAuth';
+import connectToDatabase from 'lib/mongodb';
+import Sleep from 'models/Sleep'; // Assuming Sleep model exists
+import withAuth from 'middleware/withAuth';
 
 const handler = async (req, res) => {
   await connectToDatabase();

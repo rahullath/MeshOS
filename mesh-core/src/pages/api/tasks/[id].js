@@ -1,7 +1,7 @@
 // mesh-core/src/pages/api/tasks/[id].js
-import connectToDatabase from '../../../lib/mongodb';
-import Task from '../../../models/Task'; // Assuming Task model exists
-import withAuth from '../../../middleware/withAuth';
+import connectToDatabase from 'lib/mongodb';
+import Task from 'models/Task'; // Assuming Task model exists
+import withAuth from 'middleware/withAuth';
 import mongoose from 'mongoose';
 
 const handler = async (req, res) => {

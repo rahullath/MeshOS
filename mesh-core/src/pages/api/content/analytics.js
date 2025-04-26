@@ -1,8 +1,8 @@
 // mesh-core/src/pages/api/content/analytics.js
 // Assuming this route provides analytics data for the authenticated user.
 // It will return placeholder data filtered by the user ID.
-import connectToDatabase from '../../../lib/mongodb';
-import withAuth from '../../../middleware/withAuth';
+import connectToDatabase from 'lib/mongodb';
+import withAuth from 'middleware/withAuth';
 // Assuming relevant models exist, e.g., Media, Recommendation
 // import Media from '../../../models/Media';
 // import Recommendation from '../../../models/Recommendation';

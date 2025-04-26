@@ -1,8 +1,8 @@
 // mesh-core/src/pages/api/health/sleep/analytics.js
 // Assuming this route provides analytics for sleep data for the authenticated user.
-import connectToDatabase from '../../../lib/mongodb';
-import Sleep from '../../../models/Sleep'; // Assuming Sleep model exists
-import withAuth from '../../../middleware/withAuth';
+import connectToDatabase from 'lib/mongodb';
+import Sleep from 'models/Sleep'; // Assuming Sleep model exists
+import withAuth from 'middleware/withAuth';
 
 const handler = async (req, res) => {
   await connectToDatabase();

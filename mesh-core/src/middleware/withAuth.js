@@ -1,5 +1,5 @@
 // mesh-core/src/middleware/withAuth.js
-import { verifyToken } from '../lib/auth'; // Assuming verifyToken exists and works
+import { verifyToken } from 'lib/auth'; // Assuming verifyToken exists and works
 
 const withAuth = (handler) => async (req, res) => {
   try {

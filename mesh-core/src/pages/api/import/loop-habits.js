@@ -1,8 +1,8 @@
 // mesh-core/src/pages/api/import/loop-habits.js
-import connectToDatabase from '../../../lib/mongodb';
-import Habit from '../../../models/Habit'; // Assuming Habit model exists
-import HabitEntry from '../../../models/HabitEntry'; // Assuming HabitEntry model exists
-import withAuth from '../../../middleware/withAuth';
+import connectToDatabase from 'lib/mongodb';
+import Habit from 'models/Habit'; // Assuming Habit model exists
+import HabitEntry from 'models/HabitEntry'; // Assuming HabitEntry model exists
+import withAuth from 'middleware/withAuth';
 import Papa from 'papaparse'; // Assuming PapaParse is installed and used for CSV
 
 const handler = async (req, res) => {

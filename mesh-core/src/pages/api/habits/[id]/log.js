@@ -1,9 +1,9 @@
 // mesh-core/src/pages/api/habits/[id]/log.js
 // Assuming this route is for logging entries for a specific habit.
-import connectToDatabase from '../../../lib/mongodb';
-import Habit from '../../../models/Habit'; // Assuming Habit model exists
-import HabitEntry from '../../../models/HabitEntry'; // Assuming HabitEntry model exists
-import withAuth from '../../../middleware/withAuth';
+import connectToDatabase from 'lib/mongodb';
+import Habit from 'models/Habit'; // Assuming Habit model exists
+import HabitEntry from 'models/HabitEntry'; // Assuming HabitEntry model exists
+import withAuth from 'middleware/withAuth';
 import mongoose from 'mongoose';
 
 const handler = async (req, res) => {

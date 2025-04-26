@@ -1,8 +1,8 @@
 // mesh-core/src/pages/api/finance/analytics.js
 // Assuming this route provides finance analytics for the authenticated user.
 // It will return placeholder data filtered by the user ID.
-import connectToDatabase from '../../../lib/mongodb';
-import withAuth from '../../../middleware/withAuth';
+import connectToDatabase from 'lib/mongodb';
+import withAuth from 'middleware/withAuth';
 // Assuming relevant models exist, e.g., FinanceTransaction, Subscription, CryptoHolding
 import FinanceTransaction from '../../../models/FinanceTransaction';
 import Subscription from '../../../models/Subscription';

@@ -1,9 +1,9 @@
 // mesh-core/src/pages/api/import/uk-applications.js
 // Assuming this route handles importing UK Application data for the authenticated user.
 // Creating this file as it was listed as potentially missing.
-import connectToDatabase from '../../../lib/mongodb';
-import withAuth from '../../../middleware/withAuth';
-import Application from '../../../models/Application'; // Assuming Application model exists
+import connectToDatabase from 'lib/mongodb';
+import withAuth from 'middleware/withAuth';
+import Application from 'models/Application'; // Assuming Application model exists
 
 const handler = async (req, res) => {
   await connectToDatabase();

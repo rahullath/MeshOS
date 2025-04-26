@@ -1,7 +1,7 @@
 // mesh-core/src/pages/api/projects/index.js
-import connectToDatabase from '../../../lib/mongodb';
-import Project from '../../../models/Project'; // Assuming Project model exists
-import withAuth from '../../../middleware/withAuth';
+import connectToDatabase from 'lib/mongodb';
+import Project from 'models/Project'; // Assuming Project model exists
+import withAuth from 'middleware/withAuth';
 
 const handler = async (req, res) => {
   await connectToDatabase();

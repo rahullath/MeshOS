@@ -1,7 +1,7 @@
 // mesh-core/src/pages/api/health/medication/index.js
-import connectToDatabase from '../../../lib/mongodb';
-import Medication from '../../../models/Medication'; // Assuming Medication model exists
-import withAuth from '../../../middleware/withAuth';
+import connectToDatabase from 'lib/mongodb';
+import Medication from 'models/Medication'; // Assuming Medication model exists
+import withAuth from 'middleware/withAuth';
 
 const handler = async (req, res) => {
   await connectToDatabase();

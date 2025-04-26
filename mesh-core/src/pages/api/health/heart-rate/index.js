@@ -1,7 +1,7 @@
 // mesh-core/src/pages/api/health/heart-rate/index.js
-import connectToDatabase from '../../../lib/mongodb';
-import HeartRate from '../../../models/HeartRate'; // Assuming HeartRate model exists
-import withAuth from '../../../middleware/withAuth';
+import connectToDatabase from 'lib/mongodb';
+import HeartRate from 'models/HeartRate'; // Assuming HeartRate model exists
+import withAuth from 'middleware/withAuth';
 
 const handler = async (req, res) => {
   await connectToDatabase();

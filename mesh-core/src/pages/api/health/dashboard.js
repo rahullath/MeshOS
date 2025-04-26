@@ -1,8 +1,8 @@
 // mesh-core/src/pages/api/health/dashboard.js
 // Assuming this route provides aggregated health data for the authenticated user.
 // It will return placeholder data filtered by the user ID.
-import connectToDatabase from '../../../lib/mongodb';
-import withAuth from '../../../middleware/withAuth';
+import connectToDatabase from 'lib/mongodb';
+import withAuth from 'middleware/withAuth';
 // Assuming relevant models exist, e.g., HealthMetric, Sleep, HeartRate, Medication
 import HealthMetric from '../../../models/HealthMetric';
 import Sleep from '../../../models/Sleep';

@@ -1,10 +1,10 @@
 // mesh-core/src/pages/api/import/habits.js
 // Assuming this route handles importing habit data for the authenticated user.
-import connectToDatabase from '../../../lib/mongodb';
-import withAuth from '../../../middleware/withAuth';
+import connectToDatabase from 'lib/mongodb';
+import withAuth from 'middleware/withAuth';
 // Assuming relevant models exist, e.g., Habit, HabitEntry
-import Habit from '../../../models/Habit';
-import HabitEntry from '../../../models/HabitEntry';
+import Habit from 'models/Habit';
+import HabitEntry from 'models/HabitEntry';
 
 const handler = async (req, res) => {
   await connectToDatabase();
