@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/meshOS';
-const MONGODB_DB = process.env.MONGODB_DB || 'meshOS';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/test';
+const MONGODB_DB = 'test';
 
 // Check if we're in a production environment
 const isProd = process.env.NODE_ENV === 'production';
