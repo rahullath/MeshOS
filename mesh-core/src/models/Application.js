@@ -44,4 +44,5 @@ const ApplicationSchema = new mongoose.Schema({
   }]
 }, { timestamps: true });
 
+// Check if model already exists to prevent overwrite error
 export default mongoose.models.Application || mongoose.model('Application', ApplicationSchema);

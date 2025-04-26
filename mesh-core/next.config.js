@@ -5,9 +5,7 @@ const nextConfig = {
   experimental: {
     esmExternals: 'loose', // Required to make certain dependencies work properly
   },
-  // Enable SWC minification for faster builds
-  swcMinify: true,
-  // Path rewriting for improved module resolution
+  // Enable SWC minification for faster builds  // Path rewriting for improved module resolution
   async rewrites() {
     return [];
   },
