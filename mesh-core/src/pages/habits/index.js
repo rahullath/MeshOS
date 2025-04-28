@@ -1,18 +1,20 @@
+// mesh-core/src/pages/habits/index.js
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Layout from '../../components/layout/Layout';
+import Link from 'next/link'; // Import Link
 
 export default function HabitsPage() {
   const [habits, setHabits] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('all');
-  
+
   useEffect(() => {
     const fetchHabits = async () => {
       try {
         setLoading(true);
-        
+
         // Instead of API call, use hardcoded data for now while we debug API connections
         const sampleHabits = [
           {
@@ -56,14 +58,14 @@ export default function HabitsPage() {
             createdAt: new Date(Date.now() - 86400000 * 5) // 5 days ago
           }
         ];
-        
+
         // Filter based on the active tab
         let filteredHabits = [...sampleHabits];
-        
+
         if (activeTab !== 'all') {
           filteredHabits = sampleHabits.filter(habit => habit.type === activeTab);
         }
-        
+
         setHabits(filteredHabits);
       } catch (err) {
         console.error('Error fetching habits:', err);
@@ -95,17 +97,27 @@ export default function HabitsPage() {
       <Head>
         <title>Habits | MeshOS</title>
       </Head>
-      
+
       <div className="container mx-auto px-4 py-6">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Habits Tracker</h1>
-          <button
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-          >
-            Add Habit
-          </button>
+          <div className="flex space-x-4"> {/* Use a flex container for buttons */}
+             {/* Link to open the modal */}
+            <Link href="/modal/habits" as="/modal/habits" shallow>
+              <button
+                 className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700"
+              >
+                Open Habits Modal
+              </button>
+            </Link>
+            <button
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              Add Habit
+            </button>
+          </div>
         </div>
-        
+
         {/* Tabs */}
         <div className="mb-6">
           <nav className="flex space-x-4 border-b border-gray-200 dark:border-gray-700">
@@ -141,13 +153,13 @@ export default function HabitsPage() {
             </button>
           </nav>
         </div>
-        
+
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
             <p>{error}</p>
           </div>
         )}
-        
+
         {loading ? (
           <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 flex items-center justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
@@ -176,7 +188,7 @@ export default function HabitsPage() {
                       <div className="text-xs text-gray-500 dark:text-gray-400">day streak</div>
                     </div>
                   </div>
-                  
+
                   <div className="mt-4 flex items-center">
                     <div className="flex space-x-2">
                       {[...Array(7)].map((_, i) => (
@@ -206,7 +218,7 @@ export default function HabitsPage() {
                       </button>
                     </div>
                   </div>
-                  
+
                   <div className="mt-4">
                     <button className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                       Mark Complete
