@@ -1,12 +1,15 @@
 // mesh-core/src/lib/mongodb.js
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI;
-const MONGODB_DB = process.env.MONGODB_DB || 'test';
+const MONGODB_DB = process.env.MONGODB_DB || 'mesh-os';
 
-if (!MONGODB_URI) {
+if (!process.env.MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable inside .env');
 }
+
+const connection = await mongoose.connect(process.env.MONGODB_URI, {
+  dbName: MONGODB_DB,
+});
 
 let cachedConnection = null;
 
@@ -16,7 +19,7 @@ async function connectToDatabase() {
   }
 
   try {
-    const connection = await mongoose.connect(MONGODB_URI, {
+    const connection = await mongoose.connect(process.env.MONGODB_URI, {
       dbName: MONGODB_DB,
       useNewUrlParser: true,
       useUnifiedTopology: true,

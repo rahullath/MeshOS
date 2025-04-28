@@ -12,21 +12,21 @@ export default function TaskDetailsPage() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!id) return;
+    if (id) {
+      const fetchTask = async () => {
+        try {
+          const response = await axios.get(`/api/tasks/${id}`);
+          setTask(response.data);
+        } catch (err) {
+          console.error('Error fetching task:', err);
+          setError('Failed to load task details.');
+        } finally {
+          setLoading(false);
+        }
+      };
 
-    const fetchTask = async () => {
-      try {
-        const response = await axios.get(`/api/tasks/${id}`);
-        setTask(response.data);
-      } catch (err) {
-        console.error('Error fetching task:', err);
-        setError('Failed to load task details.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchTask();
+      fetchTask();
+    }
   }, [id]);
 
   if (loading) {

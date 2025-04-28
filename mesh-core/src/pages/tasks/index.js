@@ -181,7 +181,7 @@ export default function Tasks() {
           </div>
         ) : (
           // Use the TaskList component to render tasks
-          <TaskList tasks={tasks} onRefresh={fetchTasks} />
+          <TaskList tasks={tasks} />
         )}
          {!loading && tasks.length === 0 && !error && (
            <div className="bg-white dark:bg-gray-800 shadow-md rounded-lg p-6 text-center">

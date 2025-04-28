@@ -1,284 +1,692 @@
-Fix these imports please - 
-
-Based on the "Module not found" errors and your jsconfig.json aliases (lib/*, models/*, middleware/*, etc. mapping to src/lib/*, src/models/*, src/middleware/*), the following imports need to be updated:
-
-Here is the list of files and the specific imports that need to be changed:
-
-1. mesh-core/src/middleware/withAuth.js
-
-    Original Import: import { verifyToken } from '../lib/auth';
-    New Import: import { verifyToken } from 'lib/auth';
-
-2. mesh-core/src/pages/api/applications/index.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Application from '../../../models/Application';
-    New Import: import Application from 'models/Application';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-3. mesh-core/src/pages/api/applications/[id].js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Application from '../../../models/Application';
-    New Import: import Application from 'models/Application';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-4. mesh-core/src/pages/api/auth/login.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import { generateToken } from '../../../lib/auth';
-    New Import: import { generateToken } from 'lib/auth';
-    (Optional: import User from '../../../models/User'; -> import User from 'models/User'; if uncommented)
-
-5. mesh-core/src/pages/api/auth/me.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-    (Optional: import User from '../../../models/User'; -> import User from 'models/User'; if uncommented)
-
-6. mesh-core/src/pages/api/content/analytics.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-    (Optional: import Media from '../../../models/Media'; -> import Media from 'models/Media'; if uncommented)
-    (Optional: import Recommendation from '../../../models/Recommendation'; -> import Recommendation from 'models/Recommendation'; if uncommented)
-
-7. mesh-core/src/pages/api/content/generate-recommendations.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-    (Optional: import Recommendation from '../../../models/Recommendation'; -> import Recommendation from 'models/Recommendation'; if uncommented)
-
-8. mesh-core/src/pages/api/finance/analytics.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-    (Optional: import FinanceTransaction from '../../../models/FinanceTransaction'; -> import FinanceTransaction from 'models/FinanceTransaction'; if uncommented)
-    (Optional: import Subscription from '../../../models/Subscription'; -> import Subscription from 'models/Subscription'; if uncommented)
-    (Optional: import CryptoHolding from '../../../models/CryptoHolding'; -> import CryptoHolding from 'models/CryptoHolding'; if uncommented)
-
-9. mesh-core/src/pages/api/habits/index.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Habit from '../../../models/Habit';
-    New Import: import Habit from 'models/Habit';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-10. mesh-core/src/pages/api/habits/[id].js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Habit from '../../../models/Habit';
-    New Import: import Habit from 'models/Habit';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-11. mesh-core/src/pages/api/habits/streak.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Habit from '../../../models/Habit';
-    New Import: import Habit from 'models/Habit';
-    Original Import: import HabitEntry from '../../../models/HabitEntry';
-    New Import: import HabitEntry from 'models/HabitEntry';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-12. mesh-core/src/pages/api/habits/[id]/log.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Habit from '../../../models/Habit';
-    New Import: import Habit from 'models/Habit';
-    Original Import: import HabitEntry from '../../../models/HabitEntry';
-    New Import: import HabitEntry from 'models/HabitEntry';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-13. mesh-core/src/pages/api/health/dashboard.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-    (Optional: Imports for specific health models like HealthMetric, Sleep, HeartRate, Medication if uncommented)
-
-14. mesh-core/src/pages/api/health/heart-rate/index.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import HeartRate from '../../../models/HeartRate';
-    New Import: import HeartRate from 'models/HeartRate';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-15. mesh-core/src/pages/api/health/heart-rate/analytics.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import HeartRate from '../../../models/HeartRate';
-    New Import: import HeartRate from 'models/HeartRate';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-16. mesh-core/src/pages/api/health/medication/index.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Medication from '../../../models/Medication';
-    New Import: import Medication from 'models/Medication';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-17. mesh-core/src/pages/api/health/metrics/index.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import HealthMetric from '../../../models/HealthMetric';
-    New Import: import HealthMetric from 'models/HealthMetric';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-18. mesh-core/src/pages/api/health/metrics/[id].js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import HealthMetric from '../../../models/HealthMetric';
-    New Import: import HealthMetric from 'models/HealthMetric';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-19. mesh-core/src/pages/api/health/sleep/index.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Sleep from '../../../models/Sleep';
-    New Import: import Sleep from 'models/Sleep';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-20. mesh-core/src/pages/api/health/sleep/analytics.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Sleep from '../../../models/Sleep';
-    New Import: import Sleep from 'models/Sleep';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-21. mesh-core/src/pages/api/import/finance.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-    (Optional: import FinanceTransaction from '../../../models/FinanceTransaction'; -> import FinanceTransaction from 'models/FinanceTransaction'; if uncommented)
-
-22. mesh-core/src/pages/api/import/habits.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-    (Optional: import Habit from '../../../models/Habit'; -> import Habit from 'models/Habit'; if uncommented)
-    (Optional: import HabitEntry from '../../../models/HabitEntry'; -> import HabitEntry from 'models/HabitEntry'; if uncommented)
-
-23. mesh-core/src/pages/api/import/loop-habits.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Habit from '../../../models/Habit';
-    New Import: import Habit from 'models/Habit';
-    Original Import: import HabitEntry from '../../../models/HabitEntry';
-    New Import: import HabitEntry from 'models/HabitEntry';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-24. mesh-core/src/pages/api/import/uk-applications.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-    Original Import: import Application from '../../../models/Application';
-    New Import: import Application from 'models/Application';
-
-25. mesh-core/src/pages/api/projects/index.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Project from '../../../models/Project';
-    New Import: import Project from 'models/Project';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-26. mesh-core/src/pages/api/projects/[id].js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Project from '../../../models/Project';
-    New Import: import Project from 'models/Project';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-27. mesh-core/src/pages/api/tasks/index.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Task from '../../../models/Task';
-    New Import: import Task from 'models/Task';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-28. mesh-core/src/pages/api/tasks/[id].js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Task from '../../../models/Task';
-    New Import: import Task from 'models/Task';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-29. mesh-core/src/pages/api/tasks/completed.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Task from '../../../models/Task';
-    New Import: import Task from 'models/Task';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-30. mesh-core/src/pages/api/tasks/remaining.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Task from '../../../models/Task';
-    New Import: import Task from 'models/Task';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-31. mesh-core/src/pages/api/tasks/statistics.js
-
-    Original Import: import connectToDatabase from '../../../lib/mongodb';
-    New Import: import connectToDatabase from 'lib/mongodb';
-    Original Import: import Task from '../../../models/Task';
-    New Import: import Task from 'models/Task';
-    Original Import: import withAuth from '../../../middleware/withAuth';
-    New Import: import withAuth from 'middleware/withAuth';
-
-You can go through each of these files and replace the old import paths with the new ones listed above. This should resolve the "Module not found" errors related to these paths.
+# Detailed Implementation Steps for MeshOS Data Import and API Functionality
+
+## 1. Understand Import Issues
+
+The APIs are returning errors like "Import data must be a non-empty array" because the import handlers expect specific data formats. First, you need to understand each import endpoint's expectations.
+
+## 2. Fix the Import APIs
+
+### 2.1 Finance Import API (`/api/import/finance`)
+
+1. Locate `src/pages/api/import/finance.js`
+2. Update to properly handle the request format:
+
+```javascript
+// Fix the finance import API to accept the correct format
+const handler = async (req, res) => {
+  await connectToDatabase();
+  const userId = req.userId;
+
+  const { bankStatementCsv, cryptoHoldingsTxt } = req.body;
+
+  if (!bankStatementCsv || !cryptoHoldingsTxt) {
+    return res.status(400).json({ success: false, message: 'Both bankStatementCsv and cryptoHoldingsTxt are required' });
+  }
+
+  try {
+    // Parse the CSV using PapaParse
+    const parsedCsv = Papa.parse(bankStatementCsv, { header: true, skipEmptyLines: true });
+    
+    if (parsedCsv.errors.length > 0) {
+      return res.status(400).json({ success: false, message: 'Error parsing CSV', errors: parsedCsv.errors });
+    }
+    
+    const transactions = parsedCsv.data.map(row => ({
+      userId,
+      date: new Date(row.Date || row.date),
+      description: row.Description || row.description,
+      amount: parseFloat(row.Amount || row.amount),
+      type: parseFloat(row.Amount || row.amount) >= 0 ? 'income' : 'expense',
+      category: row.Category || row.category || 'uncategorized'
+    }));
+
+    // Parse the crypto holdings
+    const cryptoLines = cryptoHoldingsTxt.split('\n').filter(line => line.trim());
+    const cryptoHoldings = cryptoLines.map(line => {
+      const [name, amount] = line.split(',').map(item => item.trim());
+      return {
+        userId,
+        name,
+        symbol: name.slice(0, 3).toUpperCase(),
+        quantity: parseFloat(amount)
+      };
+    });
+
+    // Insert into database
+    await FinanceTransaction.insertMany(transactions);
+    await CryptoHolding.insertMany(cryptoHoldings);
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'Finance data imported successfully',
+      imported: {
+        transactions: transactions.length,
+        cryptoHoldings: cryptoHoldings.length
+      }
+    });
+  } catch (error) {
+    console.error('Finance import error:', error);
+    res.status(500).json({ success: false, message: 'Error importing finance data', error: error.message });
+  }
+};
+```
+
+### 2.2 Health Import API (`/api/import/health`)
+
+1. Locate `src/pages/api/import/health.js`
+2. Update to handle health data correctly:
+
+```javascript
+const handler = async (req, res) => {
+  await connectToDatabase();
+  const userId = req.userId;
+
+  const { heartrateTxt, sleepTxt } = req.body;
+
+  if (!heartrateTxt || !sleepTxt) {
+    return res.status(400).json({ success: false, message: 'Both heartrateTxt and sleepTxt are required' });
+  }
+
+  try {
+    // Parse heartrate data
+    const heartrateLines = heartrateTxt.split('\n').filter(line => line.trim());
+    const heartrateData = heartrateLines.map(line => {
+      const [dateStr, minRate, maxRate] = line.split(',').map(item => item.trim());
+      return {
+        userId,
+        date: new Date(dateStr),
+        min: parseInt(minRate),
+        max: parseInt(maxRate)
+      };
+    });
+
+    // Parse sleep data
+    const sleepLines = sleepTxt.split('\n').filter(line => line.trim());
+    const sleepData = sleepLines.map(line => {
+      const [dateStr, hours] = line.split(',').map(item => item.trim());
+      return {
+        userId,
+        date: new Date(dateStr),
+        hours: parseFloat(hours)
+      };
+    });
+
+    // Insert into database
+    await HeartRate.insertMany(heartrateData);
+    await Sleep.insertMany(sleepData);
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'Health data imported successfully',
+      imported: {
+        heartrate: heartrateData.length,
+        sleep: sleepData.length
+      }
+    });
+  } catch (error) {
+    console.error('Health import error:', error);
+    res.status(500).json({ success: false, message: 'Error importing health data', error: error.message });
+  }
+};
+```
+
+### 2.3 Habits Import API (`/api/import/loop-habits`)
+
+1. Locate `src/pages/api/import/loop-habits.js`
+2. Update to handle habits correctly:
+
+```javascript
+const handler = async (req, res) => {
+  await connectToDatabase();
+  const userId = req.userId;
+
+  const { habitsCsv, checkmarksCsv } = req.body;
+
+  if (!habitsCsv && !checkmarksCsv) {
+    return res.status(400).json({ success: false, message: 'At least one of habitsCsv or checkmarksCsv is required' });
+  }
+
+  try {
+    let habitsImported = 0;
+    let entriesImported = 0;
+    const habitMap = new Map();
+
+    // Process habits if provided
+    if (habitsCsv) {
+      const parsedHabits = Papa.parse(habitsCsv, { header: true, skipEmptyLines: true });
+      
+      if (parsedHabits.errors.length > 0) {
+        return res.status(400).json({ success: false, message: 'Error parsing habits CSV', errors: parsedHabits.errors });
+      }
+      
+      const habitsToInsert = parsedHabits.data
+        .filter(row => row.Name)
+        .map(row => ({
+          userId,
+          name: row.Name,
+          category: row.Category || 'general',
+          type: row.Type === 'negative' ? 'negative' : 'positive',
+          frequency: row.Frequency || 'daily',
+          color: row.Color || '#4287f5',
+          loopId: row.ID
+        }));
+      
+      if (habitsToInsert.length > 0) {
+        const insertedHabits = await Habit.insertMany(habitsToInsert);
+        habitsImported = insertedHabits.length;
+        
+        // Build map for checkmarks processing
+        insertedHabits.forEach(habit => {
+          if (habit.loopId) {
+            habitMap.set(habit.loopId, habit._id);
+          } else {
+            habitMap.set(habit.name, habit._id);
+          }
+        });
+      }
+    }
+
+    // Process checkmarks if provided
+    if (checkmarksCsv) {
+      const parsedCheckmarks = Papa.parse(checkmarksCsv, { header: true, skipEmptyLines: true });
+      
+      if (parsedCheckmarks.errors.length > 0) {
+        return res.status(400).json({ success: false, message: 'Error parsing checkmarks CSV', errors: parsedCheckmarks.errors });
+      }
+      
+      const entriesToInsert = [];
+      
+      parsedCheckmarks.data.forEach(row => {
+        const habitIdOrName = row.HabitID || row.HabitName;
+        const entryDate = new Date(row.Date);
+        
+        if (!habitIdOrName || isNaN(entryDate.getTime())) {
+          return;
+        }
+        
+        const habitId = habitMap.get(habitIdOrName);
+        
+        if (habitId && row.Status === 'x') {
+          entriesToInsert.push({
+            userId,
+            habitId,
+            date: entryDate,
+            value: 1
+          });
+        }
+      });
+      
+      if (entriesToInsert.length > 0) {
+        const insertedEntries = await HabitEntry.insertMany(entriesToInsert);
+        entriesImported = insertedEntries.length;
+      }
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      message: 'Habits data imported successfully',
+      imported: {
+        habits: habitsImported,
+        entries: entriesImported
+      }
+    });
+  } catch (error) {
+    console.error('Habits import error:', error);
+    res.status(500).json({ success: false, message: 'Error importing habits data', error: error.message });
+  }
+};
+```
+
+## 3. Add Test Data for Each Section
+
+### 3.1 Create Seed Script
+
+1. Create a file `seed-data.js` in the project root:
+
+```javascript
+/**
+ * Seed script to populate the database with test data
+ * Run with: node seed-data.js
+ */
+const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
+
+// MongoDB connection string - replace with your actual connection string
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/mesh-os';
+
+// Define models directly in this script to avoid import issues
+const defineModels = () => {
+  // Task model
+  const TaskSchema = new mongoose.Schema({
+    userId: { type: String, required: true },
+    title: { type: String, required: true },
+    description: { type: String },
+    category: { type: String, required: true },
+    priority: { type: String, enum: ['low', 'medium', 'high', 'urgent'], default: 'medium' },
+    status: { type: String, enum: ['todo', 'in_progress', 'blocked', 'done'], default: 'todo' },
+    dueDate: { type: Date },
+    completedDate: { type: Date },
+    project: { type: String },
+    tags: [{ type: String }],
+    timeEstimate: { type: Number },
+    timeSpent: { type: Number, default: 0 },
+    notes: { type: String }
+  }, { timestamps: true });
+
+  // Habit model
+  const HabitSchema = new mongoose.Schema({
+    userId: { type: String, required: true },
+    name: { type: String, required: true },
+    category: { type: String, required: true },
+    type: { type: String, enum: ['positive', 'negative'], required: true },
+    frequency: { type: String, enum: ['daily', 'weekly'], default: 'daily' },
+    color: { type: String, default: '#4287f5' },
+    notes: { type: String },
+    archived: { type: Boolean, default: false }
+  }, { timestamps: true });
+
+  // Project model
+  const ProjectSchema = new mongoose.Schema({
+    userId: { type: String, required: true },
+    name: { type: String, required: true },
+    description: { type: String },
+    category: { type: String },
+    status: { type: String, enum: ['planning', 'active', 'on_hold', 'completed', 'abandoned'], default: 'planning' },
+    startDate: { type: Date },
+    targetEndDate: { type: Date },
+    actualEndDate: { type: Date },
+    notes: { type: String },
+    tags: [{ type: String }]
+  }, { timestamps: true });
+
+  // Finance Transaction model
+  const FinanceTransactionSchema = new mongoose.Schema({
+    userId: { type: String, required: true },
+    date: { type: Date, required: true },
+    description: { type: String, required: true },
+    category: { type: String },
+    amount: { type: Number, required: true },
+    currency: { type: String, default: 'USD' },
+    type: { type: String, enum: ['income', 'expense'], required: true },
+    notes: { type: String }
+  }, { timestamps: true });
+
+  // Crypto Holding model
+  const CryptoHoldingSchema = new mongoose.Schema({
+    userId: { type: String, required: true },
+    name: { type: String, required: true },
+    symbol: { type: String, required: true },
+    quantity: { type: Number, required: true },
+    purchaseDate: { type: Date },
+    purchasePrice: { type: Number },
+    notes: { type: String }
+  }, { timestamps: true });
+
+  // Health models
+  const HeartRateSchema = new mongoose.Schema({
+    userId: { type: String, required: true },
+    date: { type: Date, required: true },
+    min: { type: Number },
+    max: { type: Number }
+  }, { timestamps: true });
+
+  const SleepSchema = new mongoose.Schema({
+    userId: { type: String, required: true },
+    date: { type: Date, required: true },
+    hours: { type: Number },
+    notes: { type: String }
+  }, { timestamps: true });
+
+  // Create and return models
+  return {
+    Task: mongoose.models.Task || mongoose.model('Task', TaskSchema),
+    Habit: mongoose.models.Habit || mongoose.model('Habit', HabitSchema),
+    Project: mongoose.models.Project || mongoose.model('Project', ProjectSchema),
+    FinanceTransaction: mongoose.models.FinanceTransaction || mongoose.model('FinanceTransaction', FinanceTransactionSchema),
+    CryptoHolding: mongoose.models.CryptoHolding || mongoose.model('CryptoHolding', CryptoHoldingSchema),
+    HeartRate: mongoose.models.HeartRate || mongoose.model('HeartRate', HeartRateSchema),
+    Sleep: mongoose.models.Sleep || mongoose.model('Sleep', SleepSchema)
+  };
+};
+
+// Sample data
+const generateSampleData = (userId = 'ketamine') => {
+  const now = new Date();
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const lastWeek = new Date(now);
+  lastWeek.setDate(lastWeek.getDate() - 7);
+  const nextWeek = new Date(now);
+  nextWeek.setDate(nextWeek.getDate() + 7);
+
+  return {
+    tasks: [
+      {
+        userId,
+        title: 'Complete MeshOS MVP',
+        description: 'Finish the minimum viable product for MeshOS dashboard',
+        category: 'project',
+        priority: 'high',
+        status: 'in_progress',
+        dueDate: nextWeek,
+        project: 'MeshOS',
+        tags: ['development', 'nextjs', 'react']
+      },
+      {
+        userId,
+        title: 'Apply for frontend developer job',
+        description: 'Submit application for the senior frontend role',
+        category: 'job_application',
+        priority: 'high',
+        status: 'todo',
+        dueDate: nextWeek,
+        tags: ['career', 'job-hunt']
+      },
+      {
+        userId,
+        title: 'Buy cat food',
+        description: 'Get Royal Canin for Marshall',
+        category: 'cat',
+        priority: 'medium',
+        status: 'todo',
+        dueDate: tomorrow
+      }
+    ],
+    habits: [
+      {
+        userId,
+        name: 'Morning Exercise',
+        category: 'health',
+        type: 'positive',
+        frequency: 'daily',
+        color: '#4CAF50'
+      },
+      {
+        userId,
+        name: 'Meditation',
+        category: 'mental',
+        type: 'positive',
+        frequency: 'daily',
+        color: '#9C27B0'
+      },
+      {
+        userId,
+        name: 'No Social Media',
+        category: 'productivity',
+        type: 'negative',
+        frequency: 'daily',
+        color: '#F44336'
+      }
+    ],
+    projects: [
+      {
+        userId,
+        name: 'MeshOS Development',
+        description: 'Personal dashboard for life management',
+        category: 'Software',
+        status: 'active',
+        startDate: lastWeek,
+        targetEndDate: nextWeek,
+        tags: ['nextjs', 'mongodb']
+      },
+      {
+        userId,
+        name: 'Job Search',
+        description: 'Find a new developer position',
+        category: 'Career',
+        status: 'active',
+        startDate: yesterday,
+        tags: ['career', 'networking']
+      }
+    ],
+    financeTransactions: [
+      {
+        userId,
+        date: yesterday,
+        description: 'Salary',
+        category: 'Income',
+        amount: 5000.00,
+        type: 'income',
+        notes: 'Monthly salary'
+      },
+      {
+        userId,
+        date: now,
+        description: 'Grocery Shopping',
+        category: 'Food',
+        amount: -120.50,
+        type: 'expense',
+        notes: 'Weekly groceries'
+      },
+      {
+        userId,
+        date: now,
+        description: 'Spotify Subscription',
+        category: 'Entertainment',
+        amount: -9.99,
+        type: 'expense'
+      }
+    ],
+    cryptoHoldings: [
+      {
+        userId,
+        name: 'Bitcoin',
+        symbol: 'BTC',
+        quantity: 0.25,
+        purchaseDate: lastWeek,
+        purchasePrice: 50000
+      },
+      {
+        userId,
+        name: 'Ethereum',
+        symbol: 'ETH',
+        quantity: 2.5,
+        purchaseDate: lastWeek,
+        purchasePrice: 3000
+      }
+    ],
+    heartRates: [
+      {
+        userId,
+        date: yesterday,
+        min: 55,
+        max: 120
+      },
+      {
+        userId,
+        date: now,
+        min: 58,
+        max: 125
+      }
+    ],
+    sleep: [
+      {
+        userId,
+        date: yesterday,
+        hours: 7.5,
+        notes: 'Slept well'
+      },
+      {
+        userId,
+        date: now,
+        hours: 6.5,
+        notes: 'Woke up a few times'
+      }
+    ]
+  };
+};
+
+// Seed database function
+const seedDatabase = async () => {
+  try {
+    // Connect to MongoDB
+    await mongoose.connect(MONGODB_URI);
+    console.log('Connected to MongoDB');
+
+    // Define models
+    const models = defineModels();
+
+    // Generate test data
+    const userId = 'ketamine'; // Use the hardcoded user ID from withAuth middleware
+    const testData = generateSampleData(userId);
+
+    // Insert data for each model
+    console.log('Seeding tasks...');
+    await models.Task.insertMany(testData.tasks);
+
+    console.log('Seeding habits...');
+    await models.Habit.insertMany(testData.habits);
+
+    console.log('Seeding projects...');
+    await models.Project.insertMany(testData.projects);
+
+    console.log('Seeding finance transactions...');
+    await models.FinanceTransaction.insertMany(testData.financeTransactions);
+
+    console.log('Seeding crypto holdings...');
+    await models.CryptoHolding.insertMany(testData.cryptoHoldings);
+
+    console.log('Seeding heart rate data...');
+    await models.HeartRate.insertMany(testData.heartRates);
+
+    console.log('Seeding sleep data...');
+    await models.Sleep.insertMany(testData.sleep);
+
+    console.log('Database seeded successfully!');
+  } catch (error) {
+    console.error('Error seeding database:', error);
+  } finally {
+    // Close the connection
+    await mongoose.disconnect();
+    console.log('MongoDB connection closed');
+  }
+};
+
+// Run the seeding function
+seedDatabase();
+```
+
+2. Run the seed script:
+```
+node seed-data.js
+```
+
+### 3.2 Create Example Import Files
+
+For manual testing, create example import files:
+
+**bank_statement.csv:**
+```
+Date,Description,Amount,Category
+2025-04-01,Salary,5000,Income
+2025-04-03,Grocery Store,-75.95,Food
+2025-04-05,Amazon,-129.99,Shopping
+2025-04-07,Netflix,-14.99,Entertainment
+2025-04-10,Gas Station,-45.23,Transportation
+```
+
+**crypto_holdings.txt:**
+```
+Bitcoin,0.25
+Ethereum,2.5
+Solana,15
+Cardano,500
+```
+
+**heartrate.txt:**
+```
+2025-04-01,55,120
+2025-04-02,57,118
+2025-04-03,56,125
+2025-04-04,54,122
+2025-04-05,58,130
+```
+
+**sleep.txt:**
+```
+2025-04-01,7.5
+2025-04-02,6.2
+2025-04-03,8.0
+2025-04-04,6.8
+2025-04-05,7.3
+```
+
+**habits.csv:**
+```
+Name,Category,Type,Frequency,Color
+Morning Exercise,health,positive,daily,#4CAF50
+Meditation,mental,positive,daily,#9C27B0
+Read 30 minutes,personal,positive,daily,#2196F3
+No Smoking,health,negative,daily,#F44336
+Code 1 hour,productivity,positive,daily,#FF9800
+```
+
+**checkmarks.csv:**
+```
+HabitName,Date,Status
+Morning Exercise,2025-04-01,x
+Meditation,2025-04-01,x
+Morning Exercise,2025-04-02,x
+Meditation,2025-04-02,x
+No Smoking,2025-04-02,x
+```
+
+## 4. Fix Missing Models
+
+Ensure all required models are properly defined in your `src/models` directory. Create them if they don't exist:
+
+1. **Tasks**
+2. **Habits**
+3. **HabitEntry**
+4. **Project**
+5. **FinanceTransaction**
+6. **CryptoHolding**
+7. **HeartRate**
+8. **Sleep**
+
+## 5. Update API Endpoints to Handle Empty Data
+
+For each API endpoint, add proper handling for empty data cases:
+
+```javascript
+// Example for API endpoint
+const handler = async (req, res) => {
+  try {
+    const items = await SomeModel.find({ userId: req.userId });
+    
+    // Return empty array rather than error when no items exist
+    res.status(200).json({ success: true, data: items || [] });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ success: false, message: 'Error fetching data', error: error.message });
+  }
+};
+```
+
+## 6. Test Each API Endpoint
+
+After adding test data, verify each API endpoint:
+
+1. **Tasks**: `/api/tasks`
+2. **Habits**: `/api/habits`
+3. **Projects**: `/api/projects`
+4. **Finance**: `/api/finance/transactions`
+5. **Health**: `/api/health/heart-rate` and `/api/health/sleep`
+
+## 7. Implement Import Form Functionality
+
+Make sure the frontend import forms are correctly submitting data:
+
+1. Update `src/components/import/FinanceImporter.js` to handle file reads and submits correctly
+2. Update `src/components/import/HealthImporter.js` similarly
+3. Update `src/components/import/CsvImporter.js` for habits
+
+## 8. Detailed Documentation for Testing
+
+1. Create a comprehensive testing document with:
+   - Sample API requests and expected responses
+   - Step-by-step guide for using the import features
+   - Example data files for each import type
+
+By following these steps, you'll have a working MeshOS with properly populated data and functional API endpoints, solving the "Import data must be a non-empty array" error.

@@ -39,8 +39,7 @@ const withAuth = (handler) => async (req, res) => {
     }
 
     // Attach user ID to request object
-    // In a real app, we'd use the decoded.userId, but for testing we're hardcoding 'ketamine'
-    req.userId = 'ketamine';
+    req.userId = decoded.userId;
     console.log(`Authenticated user ID set to: ${req.userId}`);
 
     // Proceed to the actual handler

@@ -12,7 +12,7 @@ const handler = async (req, res) => {
     case 'GET':
       try {
         const heartRates = await HeartRate.find({ userId }).sort({ date: -1 });
-        res.status(200).json({ success: true, data: heartRates });
+        res.status(200).json({ success: true, data: heartRates || [] });
       } catch (error) {
         console.error('Error fetching heart rates:', error);
         res.status(500).json({ success: false, message: 'Error fetching heart rates', error: error.message });

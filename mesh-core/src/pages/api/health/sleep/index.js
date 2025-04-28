@@ -12,7 +12,7 @@ const handler = async (req, res) => {
     case 'GET':
       try {
         const sleepEntries = await Sleep.find({ userId }).sort({ date: -1 });
-        res.status(200).json({ success: true, data: sleepEntries });
+        res.status(200).json({ success: true, data: sleepEntries || [] });
       } catch (error) {
         console.error('Error fetching sleep entries:', error);
         res.status(500).json({ success: false, message: 'Error fetching sleep entries', error: error.message });

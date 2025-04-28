@@ -12,7 +12,7 @@ const handler = async (req, res) => {
     case 'GET':
       try {
         const habits = await Habit.find({ userId }).sort({ createdAt: -1 });
-        res.status(200).json({ success: true, data: habits });
+        res.status(200).json({ success: true, data: habits || [] });
       } catch (error) {
         console.error('Error fetching habits:', error);
         res.status(500).json({ success: false, message: 'Error fetching habits', error: error.message });

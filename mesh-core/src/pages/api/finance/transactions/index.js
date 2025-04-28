@@ -53,10 +53,10 @@ async function handler(req, res) {
       const transactions = await FinanceTransaction.find(query)
         .sort(sort)
         .skip(skip)
-        .limit(limit);
+        .limit(limit) || [];
 
       // Get total count for pagination
-      const total = await FinanceTransaction.countDocuments(query);
+      const total = await FinanceTransaction.countDocuments(query) || 0;
 
       res.status(200).json({
         transactions,

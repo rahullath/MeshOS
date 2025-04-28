@@ -57,8 +57,7 @@ export default function TaskList({ tasks = [], onRefresh }) {
           Get started by creating a new task.
         </p>
         <div className="mt-6">
-          <Link href="/tasks/new">
-            <a className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+          <Link href="/tasks/new" className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
               <svg
                 className="-ml-1 mr-2 h-5 w-5"
                 xmlns="http://www.w3.org/2000/svg"
@@ -73,7 +72,6 @@ export default function TaskList({ tasks = [], onRefresh }) {
                 />
               </svg>
               New Task
-            </a>
           </Link>
         </div>
       </div>
@@ -190,8 +188,7 @@ export default function TaskList({ tasks = [], onRefresh }) {
                     )}
                   </button>
                   
-                  <Link href={`/tasks/${task._id}`}>
-                    <a className="ml-2 inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-gray-400 hover:bg-gray-100 hover:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-300 focus:outline-none">
+                  <Link href={`/tasks/${task._id}`} className="ml-2 inline-flex items-center p-1 border border-transparent rounded-full shadow-sm text-gray-400 hover:bg-gray-100 hover:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-300 focus:outline-none">
                       <svg
                         className="h-5 w-5"
                         xmlns="http://www.w3.org/2000/svg"
@@ -200,7 +197,6 @@ export default function TaskList({ tasks = [], onRefresh }) {
                       >
                         <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                       </svg>
-                    </a>
                   </Link>
                 </div>
               </div>

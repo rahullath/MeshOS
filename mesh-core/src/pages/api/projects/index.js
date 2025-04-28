@@ -12,7 +12,7 @@ const handler = async (req, res) => {
     case 'GET':
       try {
         const projects = await Project.find({ userId }).sort({ createdAt: -1 });
-        res.status(200).json({ success: true, data: projects });
+        res.status(200).json({ success: true, data: projects || [] });
       } catch (error) {
         console.error('Error fetching projects:', error);
         res.status(500).json({ success: false, message: 'Error fetching projects', error: error.message });

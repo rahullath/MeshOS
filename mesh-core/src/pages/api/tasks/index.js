@@ -6,13 +6,13 @@ import withAuth from '../../../middleware/withAuth';
 const handler = async (req, res) => {
   await connectToDatabase();
 
-  const userId = req.userId; // Extracted from auth middleware
+  const userId = 'ketamine'; // Hardcoded for testing
 
   switch (req.method) {
     case 'GET':
       try {
         const tasks = await Task.find({ userId }).sort({ dueDate: 1, priority: -1 }); // Example sort
-        res.status(200).json({ success: true, data: tasks });
+        res.status(200).json({ success: true, data: tasks || [] });
       } catch (error) {
         console.error('Error fetching tasks:', error);
         res.status(500).json({ success: false, message: 'Error fetching tasks', error: error.message });

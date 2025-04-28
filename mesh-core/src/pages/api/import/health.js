@@ -10,67 +10,53 @@ import Medication from '../../../models/Medication';
 
 const handler = async (req, res) => {
   await connectToDatabase();
+  const userId = req.userId;
 
-  if (req.method !== 'POST') { // Assuming import is a POST action
-    res.setHeader('Allow', ['POST']);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
+  const { heartrateTxt, sleepTxt } = req.body;
+
+  if (!heartrateTxt || !sleepTxt) {
+    return res.status(400).json({ success: false, message: 'Both heartrateTxt and sleepTxt are required' });
   }
-
-  const userId = req.userId; // Extracted from auth middleware (will be 'ketamine')
-  const importData = req.body; // Assuming the import data is in the request body
-  const { dataType } = req.query; // Optional: specify the type of health data being imported (e.g., 'sleep', 'heartrate', 'metrics')
-
-   if (!Array.isArray(importData) || importData.length === 0) {
-      return res.status(400).json({ success: false, message: 'Import data must be a non-empty array' });
-  }
-   if (!dataType) {
-       // You might want to make dataType mandatory or infer it from the data structure
-       console.warn("dataType not specified for health import. Processing generic data.");
-   }
-
 
   try {
-    // --- Placeholder Health Import Logic ---
-    console.log(`Importing ${importData.length} health records (type: ${dataType || 'generic'}) for user: ${userId}`);
+    // Parse heartrate data
+    const heartrateLines = heartrateTxt.split('\n').filter(line => line.trim());
+    const heartrateData = heartrateLines.map(line => {
+      const [dateStr, minRate, maxRate] = line.split(',').map(item => item.trim());
+      return {
+        userId,
+        date: new Date(dateStr),
+        min: parseInt(minRate),
+        max: parseInt(maxRate)
+      };
+    });
 
-    // Replace with actual import logic. This might involve:
-    // 1. Validating the structure of each data record based on dataType.
-    // 2. Mapping import data fields to the appropriate Mongoose model fields (HealthMetric, Sleep, HeartRate, etc.).
-    // 3. Adding the userId to each record.
-    // 4. Inserting the records into the database using the relevant Mongoose models.
+    // Parse sleep data
+    const sleepLines = sleepTxt.split('\n').filter(line => line.trim());
+    const sleepData = sleepLines.map(line => {
+      const [dateStr, hours] = line.split(',').map(item => item.trim());
+      return {
+        userId,
+        date: new Date(dateStr),
+        hours: parseFloat(hours)
+      };
+    });
 
-    const recordsToInsert = importData.map(record => ({
-        ...record,
-        userId: userId,
-        date: new Date(record.date) // Assuming a 'date' field exists and needs parsing
-        // Add other necessary field mappings based on dataType
-    }));
+    // Insert into database
+    await HeartRate.insertMany(heartrateData);
+    await Sleep.insertMany(sleepData);
 
-    // Example: Conditional insertion based on dataType
-    // switch (dataType) {
-    //     case 'sleep':
-    //         await Sleep.insertMany(recordsToInsert);
-    //         break;
-    //     case 'heartrate':
-    //         await HeartRate.insertMany(recordsToInsert);
-    //         break;
-    //     case 'metrics':
-    //         await HealthMetric.insertMany(recordsToInsert);
-    //         break;
-    //     default:
-    //          console.error("Unknown health data type for import:", dataType);
-    //          // Handle unknown type error
-    // }
-
-    // --- End Placeholder ---
-     console.warn("Health import endpoint uses placeholder logic. Replace with actual data processing and saving.");
-
-
-    res.status(200).json({ success: true, message: `Successfully triggered import of ${importData.length} health records (type: ${dataType || 'generic'}) for user: ${userId}` });
-
+    res.status(200).json({ 
+      success: true, 
+      message: 'Health data imported successfully',
+      imported: {
+        heartrate: heartrateData.length,
+        sleep: sleepData.length
+      }
+    });
   } catch (error) {
     console.error('Health import error:', error);
-    res.status(500).json({ success: false, message: 'Internal server error during health import', error: error.message });
+    res.status(500).json({ success: false, message: 'Error importing health data', error: error.message });
   }
 };
 
