@@ -180,11 +180,26 @@ exports.deleteHabit = async (req, res) => {
   }
 };
 
-// Complete habit for today
+// Complete habit for a specific date
 exports.completeHabit = async (req, res) => {
   try {
-    const { completed, notes, value } = req.body;
-    const today = new Date();
+    // Add default empty object to prevent error if req.body is undefined
+    const { completed, notes, value, date } = req.body || {}; 
+    
+    // Always create a new Date object to ensure it's valid
+    // If date is provided in the request, parse it properly; otherwise use current date
+    let completionDate;
+    try {
+      completionDate = date ? parseISO(date) : new Date();
+      // Ensure we have a valid date object
+      if (!(completionDate instanceof Date) || isNaN(completionDate)) {
+        throw new Error('Invalid date');
+      }
+    } catch (dateError) {
+      // Fallback to current date if parsing fails
+      console.error('Date parsing error:', dateError);
+      completionDate = new Date();
+    }
     
     const habit = await Habit.findById(req.params.id);
     
@@ -192,30 +207,30 @@ exports.completeHabit = async (req, res) => {
       return res.status(404).json({ message: 'Habit not found' });
     }
     
-    // Check if there's already an entry for today
-    const todayIndex = habit.history.findIndex(entry => 
-      isSameDay(new Date(entry.date), today)
+    // Check if there's already an entry for the specified date
+    const dateIndex = habit.history.findIndex(entry => 
+      isSameDay(new Date(entry.date), completionDate)
     );
     
-    if (todayIndex >= 0) {
-      // Update existing entry for today
-      habit.history[todayIndex] = {
-        ...habit.history[todayIndex],
-        completed: completed !== undefined ? completed : habit.history[todayIndex].completed,
-        notes: notes || habit.history[todayIndex].notes,
-        value: value || habit.history[todayIndex].value
+    if (dateIndex >= 0) {
+      // Update existing entry for the date
+      habit.history[dateIndex] = {
+        ...habit.history[dateIndex],
+        completed: completed !== undefined ? completed : habit.history[dateIndex].completed,
+        notes: notes !== undefined ? notes : habit.history[dateIndex].notes,
+        value: value !== undefined ? value : habit.history[dateIndex].value
       };
     } else {
-      // Create a new entry for today
+      // Create a new entry for the specified date
       habit.history.push({
-        date: today,
+        date: completionDate,  // Ensure this is a valid Date object
         completed: completed !== undefined ? completed : true,
-        notes: notes || '',
-        value: value || 1
+        notes: notes !== undefined ? notes : '',
+        value: value !== undefined ? value : 1
       });
     }
     
-    habit.updatedAt = today;
+    habit.updatedAt = new Date();
     const updatedHabit = await habit.save();
     
     // Calculate current streak
@@ -227,6 +242,8 @@ exports.completeHabit = async (req, res) => {
     });
   } catch (error) {
     console.error('Error completing habit:', error);
+    console.log('Request body:', req.body); // Log the request body for debugging
+    console.log('Error details:', JSON.stringify(error, null, 2)); // Detailed error log
     res.status(500).json({ message: 'Server error while completing habit' });
   }
 };

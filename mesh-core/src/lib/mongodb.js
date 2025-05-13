@@ -7,9 +7,11 @@ if (!process.env.MONGODB_URI) {
   throw new Error('Please define the MONGODB_URI environment variable inside .env');
 }
 
-const connection = await mongoose.connect(process.env.MONGODB_URI, {
-  dbName: MONGODB_DB,
-});
+// Remove this duplicate initial connection - it's not being assigned to cachedConnection
+// and is redundant with the connection in the connectToDatabase function
+// const connection = await mongoose.connect(process.env.MONGODB_URI, {
+//   dbName: MONGODB_DB,
+// });
 
 let cachedConnection = null;
 
@@ -19,11 +21,12 @@ async function connectToDatabase() {
   }
 
   try {
+    // Removed deprecated options: useNewUrlParser and useUnifiedTopology
+    // These are now default behavior in the MongoDB driver
     const connection = await mongoose.connect(process.env.MONGODB_URI, {
       dbName: MONGODB_DB,
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
     });
+    
     cachedConnection = connection;
     console.log(`Connected to MongoDB database: ${connection.connections[0].name}`);
     return connection;

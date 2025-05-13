@@ -1,6 +1,7 @@
 // jest.config.js
 module.exports = {
   testEnvironment: 'node',
+  testTimeout: 10000, // Added timeout from package.json config
   roots: ['<rootDir>/src'],
   testMatch: ['**/__tests__/**/*.js', '**/?(*.)+(spec|test).js'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'json'],

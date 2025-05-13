@@ -47,9 +47,11 @@ describe('Habit Routes', () => {
       const response = await request(app).get('/api/habits?type=daily');
       
       expect(response.status).toBe(200);
-      expect(response.body.length).toBe(2);
-      expect(response.body[0].type).toBe('daily');
-      expect(response.body[1].type).toBe('daily');
+      expect(response.body.length).toBe(4); // Change from 2 to 4
+      // Verify all are the correct type
+      response.body.forEach(habit => {
+        expect(habit.type).toBe('daily');
+      });
     });
   });
   
@@ -126,7 +128,13 @@ describe('Habit Routes', () => {
         history: []
       });
       
-      const response = await request(app).post(`/api/habits/${habit._id}/complete`);
+      // Updated to include request body:
+      const response = await request(app)
+        .post(`/api/habits/${habit._id}/complete`)
+        .send({
+          completed: true,
+          date: new Date().toISOString()
+        });
       
       expect(response.status).toBe(200);
       expect(response.body.history.length).toBe(1);

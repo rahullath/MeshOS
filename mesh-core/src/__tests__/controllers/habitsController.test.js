@@ -65,9 +65,12 @@ describe('Habits Controller', () => {
       expect(res.status).toHaveBeenCalledWith(200);
       
       const responseData = res.json.mock.calls[0][0];
-      expect(responseData.length).toBe(2);
-      expect(responseData[0].type).toBe('daily');
-      expect(responseData[1].type).toBe('daily');
+      // Option 2: Update the expectation to match reality
+      expect(responseData.length).toBe(2); // Should be 2 daily habits
+      // And ensure all returned habits have the correct type
+      responseData.forEach(habit => {
+        expect(habit.type).toBe('daily');
+      });
     });
   });
   
@@ -158,7 +161,8 @@ describe('Habits Controller', () => {
         history: []
       });
       
-      const req = mockRequest({}, { id: habit._id.toString() });
+      const today = new Date();
+      const req = mockRequest({ date: today.toISOString() }, { id: habit._id.toString() });
       const res = mockResponse();
       
       await habitsController.completeHabit(req, res);
@@ -176,22 +180,33 @@ describe('Habits Controller', () => {
     });
     
     it('should update an existing entry for today', async () => {
+      // Create a habit with an existing history entry
       const today = new Date();
       
       const habit = await Habit.create({
-        name: 'Exercise',
+        name: 'Test Habit',
         type: 'daily',
-        history: [{
-          date: today,
-          completed: false,
-          notes: 'Initial entry'
-        }]
+        history: [
+          {
+            date: today, // Important: this must be a valid Date object
+            completed: false,
+            notes: '',
+            value: 1
+          }
+        ]
       });
       
+      // Make sure we're using mockRequest to create the request object
+      // This ensures consistency with how other tests are structured
       const req = mockRequest(
-        { completed: true, notes: 'Updated entry' }, 
+        { 
+          completed: true,
+          notes: 'Updated note',
+          date: today.toISOString() // Send as ISO string which is how it would come from API
+        }, 
         { id: habit._id.toString() }
       );
+      
       const res = mockResponse();
       
       await habitsController.completeHabit(req, res);
@@ -202,7 +217,7 @@ describe('Habits Controller', () => {
       const updatedHabit = await Habit.findById(habit._id);
       expect(updatedHabit.history.length).toBe(1);
       expect(updatedHabit.history[0].completed).toBe(true);
-      expect(updatedHabit.history[0].notes).toBe('Updated entry');
+      expect(updatedHabit.history[0].notes).toBe('Updated note');
     });
   });
 });
